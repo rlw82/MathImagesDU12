@@ -1,6 +1,6 @@
 var
   container = document.getElementById('container'),
-  data, graph,t, years, rate, timesPerYear, all,
+  data, graph,t, years, rate, compoundRate, all,
   options = {
               yaxis: {
                 max: 3000
@@ -16,7 +16,7 @@ var
 function init(){
   all = false;
   rate = 0.05;
-  timesPerYear = 1;
+  compoundRate = 1;
   draw();   
 }
   
@@ -33,26 +33,26 @@ function displaySeries(){
   years = 10;
 
   // Sample the exponential function
-  var data = calcSeries(years, rate, timesPerYear);
+  var data = calcSeries(years, rate, compoundRate);
   
   options["xaxis"] = {
-    title: "Growth after 10 years is $" + Math.round(interest(timesPerYear, 10, rate)*100)/100
+    title: "Growth after 10 years is $" + Math.round(interest(compoundRate, 10, rate)*100)/100
   }
   // Draw Graph
   graph = Flotr.draw(container, [data], options);
 }
 
 function displayAll(){
+  
   all = true;
   
+  //we don't want to display 10 year growth because there is more than one
   options["xaxis"] = Flotr.defaultOptions["xaxis"];
   
-  yearly = calcSeries(20, rate, 1);
-  
-  monthly = calcSeries(20, rate, 12);
-  
-  daily = calcSeries(20, rate, 365);
-  
+  //calculate series for all 4 intervals
+  yearly = calcSeries(20, rate, 1); 
+  monthly = calcSeries(20, rate, 12); 
+  daily = calcSeries(20, rate, 365); 
   cont = calcSeries(20, rate, 0);
   
   graph = Flotr.draw(container, [
@@ -75,10 +75,10 @@ function displayAll(){
   options);
 }  
 
-function changeTimesPerYear(n){
+function setCompoundRate(n){
   all = false;
   if(n >= 0){
-    timesPerYear = n;
+    compoundRate = n;
   }
   draw();
 }
@@ -111,15 +111,5 @@ function interest(n, i, rate){
   }
   return 1000*Math.pow(1+(rate/n), n*i);
 }
-
-Object.prototype.clone = function() {
-  var newObj = (this instanceof Array) ? [] : {};
-  for (var i in this) {
-    if (i == 'clone') continue;
-    if (this[i] && typeof this[i] == "object") {
-      newObj[i] = this[i].clone();
-    } else newObj[i] = this[i]
-  } return newObj;
-};
 
 init();

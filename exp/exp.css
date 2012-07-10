@@ -18,18 +18,12 @@ body {
   margin-right: auto;
  }
 
-#rateSelector {
+#interest {
+  float: left;
   width: 600px;
   height: 100px;
   margin-left: auto;
   margin-right:auto;
-}
-
-#display {
-  width: 600px;
-  height: 100px;
-  margin-left: auto;
-  margin-right: 100px;
 }
 
 button {
