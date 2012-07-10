@@ -1,36 +1,83 @@
 var
   container = document.getElementById('container'),
-  data, graph,t, years, rate, timesPerYear;
+  data, graph,t, years, rate, timesPerYear, all,
+  options = {
+              yaxis: {
+                max: 3000
+              },
+              mouse: {
+                track: true,
+                relative: true
+              },
+              title: "Exponential Growth"
+  };
 
 
+function init(){
+  all = false;
+  rate = 0.05;
+  timesPerYear = 1;
+  draw();   
+}
+  
 function draw () {
-
-  data = [];
-  years = 10;
-
-  // Sample the exponential function
-  for (t = 0; t < years; t += 0.01) {
-    data.push([t, interest(timesPerYear, t, rate)]);
+  if(all){
+   displayAll(); 
+  } else {
+   displaySeries(); 
   }
 
-  // Draw Graph
-  graph = Flotr.draw(container, [ data ], {
-    yaxis: {
-      max: 1600
-    },
-    xaxis: {
-      title: "Growth after 10 years: $" + Math.round(interest(timesPerYear, 10, rate)*100)/100
-    },
-    mouse: {
-      track: true,
-      relative: true
-    },
-    title: "Exponential Growth"
-  });
 
 }
 
+function displaySeries(){
+  //var data = [];
+  years = 10;
+
+  // Sample the exponential function
+  var data = calcSeries(years, rate, timesPerYear);
+  
+  o = options.clone();
+  o["xaxis"] = {
+    title: "Growth after 10 years is $" + Math.round(interest(timesPerYear, 10, rate)*100)/100
+  }
+  // Draw Graph
+  graph = Flotr.draw(container, [data], o);
+}
+
+function displayAll(){
+  all = true;
+  
+  yearly = calcSeries(20, rate, 1);
+  
+  monthly = calcSeries(20, rate, 12);
+  
+  daily = calcSeries(20, rate, 365);
+  
+  cont = calcSeries(20, rate, 0);
+  
+  graph = Flotr.draw(container, [
+  {
+    data: yearly,
+    label: "Yearly"
+  },
+  {
+    data: monthly,
+    label: "Monthly"
+  },
+  {
+    data: daily,
+    label: "Daily"
+  },
+  {
+    data: cont,
+    label: "Continuous"
+  }],
+  o);
+}  
+
 function changeTimesPerYear(n){
+  all = false;
   if(n >= 0){
     timesPerYear = n;
   }
@@ -47,7 +94,16 @@ function changeRate(newRate) {
   }
   display = (rate*100).toFixed(2);
   document.getElementById("rate").innerHTML=display+ "%";
-  draw();            
+  draw();          
+}
+
+
+function calcSeries(years, rate, compound){
+  var series = [];
+  for (t = 0; t < years; t += 0.01) {
+    series.push([t, interest(compound, t, rate)]);
+  }
+  return series;
 }
 
 function interest(n, i, rate){
@@ -57,6 +113,4 @@ function interest(n, i, rate){
   return 1000*Math.pow(1+(rate/n), n*i);
 }
 
-rate = 0.05;
-timesPerYear = 1;
-draw();
+init();
