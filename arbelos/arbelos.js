@@ -1,9 +1,10 @@
-function writeMessage(messageLayer, message) {
+function writeMessage(messageLayer, message, message2, xpos, ypos) {
 				var context = messageLayer.getContext();
 				messageLayer.clear();
 				context.font = "18pt Calibri";
 				context.fillStyle = "black";
-				context.fillText(message, 10, 25);
+				context.fillText(message, xpos, ypos);
+				context.fillText(message2, xpos, ypos + 20);
 }
 
 var padding = 50;
@@ -103,8 +104,9 @@ var rightArc = new Kinetic.Shape({
 
 
 dragCircle.on("dragmove", function() {
-	writeMessage(messageLayer, "x:" + (dragCircle.attrs.x - padding) );
 	drawArbelos(leftArc, rightArc, dragCircle.attrs.x, arcLayer);
+	writeMessage(messageLayer, "left radius:" +  (Math.round(left_r)), "right radius:" + (Math.round(right_r)), 10, 25);
+
 });
 
 /*
