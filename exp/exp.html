@@ -1,95 +1,20 @@
 <html>
   <head>
-    <style type="text/css">
-      body {
-        margin: 0px;
-        padding: 0px;
-      }
-      #container {
-        width : 600px;
-        height: 384px;
-        margin: 8px auto;
-      }
-
-     #buttons {
-      width: 600px;
-      height: 100px;                  
-      margin-left: auto;
-      margin-right: auto;
-     }
-
-    #rateSelector {
-      width: 600px;
-      height: 100px;
-      margin-left: auto;
-      margin-right:auto;
-    }
-
-    #display {
-      width: 600px;
-      height:s 100px;
-      position: relative;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-     button {
-        display: inline-block;
-        background: #393939;
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#565656), color-stop(100%,#2a2a2a));
-        background: -moz-linear-gradient(center top, #565656 0%, #2a2a2a 100%);
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        padding: 5px 15px;
-        display: inline-block;
-        border-color: #000000;
-        border-width: 1px;
-        border-style: solid;
-        font-family: Arial;
-        font-size: 12px;
-        color: #ffffff;
-        font-weight: bold;
-     }
-
-    button:hover {
-        background: #486816;
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6d921f), color-stop(100%,#335111));
-        background: -moz-linear-gradient(center top, #6d921f 0%, #335111 100%);
-    }
-
-    input[type='range'] {
-        display: inline-block;
-        background: #393939;
-        background: -moz-linear-gradient(center top, #565656 0%, #2a2a2a 100%);
-        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#565656), color-stop(100%,#2a2a2a));
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        padding: 5px 5px;
-        display: inline-block;
-        border-color: #000000;
-        border-width: 1px;
-        border-style: solid;
-        font-family: Arial;
-        font-size: 12px;
-        color: #ffffff;
-        font-weight: bold;
-    }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="exp.css"></link>
   </head>
   <body>
     <div id="container"></div>
-      <span id="display">Interest Rate</span>
       <div id="buttons">
-
         <button id="yearly" onClick="changeTimesPerYear(1)">Yearly</button>
         <button id="monthly" onClick="changeTimesPerYear(12)">Monthly</button>
         <button id="daily" onClick="changeTimesPerYear(365)">Daily</button>
         <button id="continous" onClick="changeTimesPerYear(0)">Continuously</button>
-        <input type="range" min="=0.01" max="1" value="0.05" step="0.00001" onChange="changeRate(this.value);"></input>
-        <span id="rate">5%</span>
+
+    </div>
+    <div id="interest">
+      <span id="display">Interest Rate</span>
+      <input type="range" min="=0.01" max="1" value="0.05" step="0.00001" onChange="changeRate(this.value);"></input>
+      <span id="rate">5%</span>
     </div>
 
     <script type="text/javascript" src="flotr2.js"></script>
