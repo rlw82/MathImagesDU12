@@ -26,8 +26,6 @@ function draw () {
   } else {
    displaySeries(); 
   }
-
-
 }
 
 function displaySeries(){
@@ -37,16 +35,17 @@ function displaySeries(){
   // Sample the exponential function
   var data = calcSeries(years, rate, timesPerYear);
   
-  o = options.clone();
-  o["xaxis"] = {
+  options["xaxis"] = {
     title: "Growth after 10 years is $" + Math.round(interest(timesPerYear, 10, rate)*100)/100
   }
   // Draw Graph
-  graph = Flotr.draw(container, [data], o);
+  graph = Flotr.draw(container, [data], options);
 }
 
 function displayAll(){
   all = true;
+  
+  options["xaxis"] = Flotr.defaultOptions["xaxis"];
   
   yearly = calcSeries(20, rate, 1);
   
@@ -73,7 +72,7 @@ function displayAll(){
     data: cont,
     label: "Continuous"
   }],
-  o);
+  options);
 }  
 
 function changeTimesPerYear(n){
@@ -112,5 +111,15 @@ function interest(n, i, rate){
   }
   return 1000*Math.pow(1+(rate/n), n*i);
 }
+
+Object.prototype.clone = function() {
+  var newObj = (this instanceof Array) ? [] : {};
+  for (var i in this) {
+    if (i == 'clone') continue;
+    if (this[i] && typeof this[i] == "object") {
+      newObj[i] = this[i].clone();
+    } else newObj[i] = this[i]
+  } return newObj;
+};
 
 init();
