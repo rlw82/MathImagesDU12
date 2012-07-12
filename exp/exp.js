@@ -20,5 +20,5 @@ curve = board.create('functiongraph', [function(x) {
 //                                        return 1000 * Math.pow((1 + (interest.Value()/interval.Value())), interval.Value()*x); 
 //                                       }]);
 
-curveGlide = board.create('glider', [5, 0, curve], {withLabel:false, showInfobox:true});
-contGlide = board.create('glider', [5, 0, cont], {withLabel:false, showInfobox:true});
+curveGlide = board.create('glider', [5, 1000, curve], {withLabel:false, showInfobox:true});
+contGlide = board.create('glider', [5, 1000, cont], {withLabel:false, showInfobox:true});
