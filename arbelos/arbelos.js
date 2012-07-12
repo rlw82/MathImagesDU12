@@ -14,6 +14,10 @@ var right_r = 0;
 var left_x = 0;
 var left_r = 0;
 var rightPadding = 0;
+var R = 0;
+var D = 0;
+var right_int_angle = 0;
+var left_int_angle = 0;
 
 function drawArbelos(leftArc, rightArc, xpos, arcLayer) {
 
@@ -22,13 +26,14 @@ function drawArbelos(leftArc, rightArc, xpos, arcLayer) {
 				right_r = (rightPadding - xpos) / 2 ;
 				right_x = xpos + right_r;
 				arcLayer.draw();
+
 }
 
 window.onload = function() {
 				var stage = new Kinetic.Stage({
 container: "container",
 width: 600,
-height: 320
+height: 600
 });
 
 width = stage.getWidth();
@@ -88,6 +93,22 @@ var leftArc = new Kinetic.Shape({
 	strokeWidth: 3
 });
 
+
+var rightAngle = new Kinetic.Shape({
+	drawFunc: function() {
+		var context = this.getContext(); 
+
+    context.moveTo(right_x, y);
+		context.beginPath();
+		context.arc(right_x, y, right_r,  Math.PI , Math.PI + right_int_angle, false);
+		this.fill();
+		this.stroke();
+		},	
+	fill: "white",
+	stroke: "orange",
+	strokeWidth: 3
+});
+
 var rightArc = new Kinetic.Shape({
 	drawFunc: function() {
 		var context = this.getContext(); 
@@ -107,17 +128,33 @@ dragCircle.on("dragmove", function() {
 	drawArbelos(leftArc, rightArc, dragCircle.attrs.x, arcLayer);
 	writeMessage(messageLayer, "left radius:" +  (Math.round(left_r)), "right radius:" + (Math.round(right_r)), 10, 25);
 
+  if(right_r < left_r) {
+  D = left_x - right_x;
+  R = left_r - right_r;
+  right_int_angle =  Math.acos(R/D);
+  left_int_angle = Math.PI - right_int_angle;
+  
+  }
+  if(right_r > left_r) {
+  D = right_x - left_x;
+  R = right_r - left_r;
+  left_int_angle =  Math.acos(R/D);
+  right_int_angle = Math.PI - left_int_angle;
+  }
+
+  console.log("r = " + R );
+  console.log("d = " + D);
+  console.log("right int angle =" + right_int_angle);
+  console.log("x = " + (right_x - left_x) + " right_x = " + right_x + " left_x = " + left_x);
+  console.log("y = " + (y - y) + " right_y = " + y + " left_y = " + y);
+  console.log("left int angle =" + left_int_angle);
 });
 
-/*
- * since each line has the same point array, we can
- * adjust the position of each one using the
- * move() method
- */
 backLayer.add(largeArc);
 dragLayer.add(dragCircle);
 arcLayer.add(rightArc);
 arcLayer.add(leftArc);
+arcLayer.add(rightAngle);
 stage.add(backLayer);
 stage.add(arcLayer);
 stage.add(dragLayer);
