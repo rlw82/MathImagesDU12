@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="exp.css"></link>
+  </head>
+  <body>
+    <div>
+      <div id="container"></div>
+
+        <div id="buttons">
+          <button id="yearly" onClick="setCompoundRate(1)">Yearly</button>
+          <button id="monthly" onClick="setCompoundRate(12)">Monthly</button>
+          <button id="daily" onClick="setCompoundRate(365)">Daily</button>
+          <button id="continous" onClick="setCompoundRate(0)">Continuously</button>
+          <button id="all" onClick="displayAll();">All</button>
+
+      </div>
+
+      <div id="interest">
+        <span id="display">Interest Rate</span>
+        <input type="range" min="=0.01" max="1" value="0.05" step="0.00001" onChange="changeRate(this.value);"></input>
+        <span id="rate">5%</span>
+      </div>
+
+    </div>
+
+    <script type="text/javascript" src="flotr2.js"></script>
+
+    <script type="text/javascript" src="exp.js"></script>
+  </body>
+</html>
+
