@@ -118,7 +118,7 @@ var tangentLine = new Kinetic.Shape({
     this.stroke();
    },
    stroke: "red",
-   strokewidth: 3 
+   strokeWidth: 4 
 });
 
 var rightArc = new Kinetic.Shape({
@@ -161,13 +161,6 @@ dragCircle.on("dragmove", function() {
 
   tangent_line_y1 = (slope * 600) + intercept;
   tangent_line_x1 = (tangent_line_y1 - intercept) / slope;
-
-  console.log("r = " + R );
-  console.log("d = " + D);
-  console.log("slope =" + slope);
-  console.log("intercept =" +intercept);
-  console.log("right int angle =" + right_int_angle);
-  console.log("left int angle =" + left_int_angle);
 
 });
 
