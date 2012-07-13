@@ -22,12 +22,6 @@ $(document).ready(function (){
       { x: 0, y: 0, r: 0, color: "#CD853F"}
     ];
 
-    //var controls = [
-    //   { x: 202, y: 120-101.5332457867, r: 5 },
-    //   { x: 440, y: 230-85.91274643497, r: 5 },
-    //   { x: 134, y: 414-51.02920062069, r: 5 }
-    //];
-
     var controls = [
       { x: 202, y: 120-circles[0].r, r: 5 },
       { x: 440, y: 230-circles[1].r, r: 5 },
