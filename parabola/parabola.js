@@ -19,4 +19,6 @@ $(document).ready(function() {
 
   var parab = board.create('parabola', [focal_point, directix, -size, size]);
 
+  var p = board.create('point', [100, 100^2/(4*focal_point.Y())]);
+
 });
