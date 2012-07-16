@@ -19,7 +19,7 @@ $(document).ready(function() {
 
 
   curveGlide.on('drag', function() {
-                countGlide.moveTo(curveGlide.X(), Math.pow(Math.E, interest.value() * curveGlide.X()));
+                countGlide.moveTo([curveGlide.X(), Math.pow(Math.E, interest.value() * curveGlide.X())]);
                   
               });
 
