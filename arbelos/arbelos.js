@@ -48,6 +48,8 @@ function calculate() {
 
   tangent_line_y1 = (slope * 600) + intercept;
   tangent_line_x1 = (tangent_line_y1 - intercept) / slope;
+
+
 }
 
 function drawArbelos(leftArc, rightArc, xpos, arcLayer) {
@@ -89,6 +91,7 @@ var largeArc = new Kinetic.Shape({
 	strokeWidth: 3
 });
 
+
 var dragCircle = new Kinetic.Circle({
 	x: 350,
 	y: 300,
@@ -123,6 +126,45 @@ var leftArc = new Kinetic.Shape({
 	fill: "white",
 	stroke: "black",
 	strokeWidth: 3
+});
+
+var twinCircle = new Kinetic.Shape({
+  drawFunc: function() {
+    var context = this.getContext();
+    context.beginPath();
+
+    r = ((left_r * right_r) / (left_r + right_r));
+    left_twin_ypos = Math.sqrt(Math.pow(left_r + r, 2) - Math.pow (Math.abs(left_r - r),2));
+    right_twin_ypos = Math.sqrt(Math.pow(right_r + r, 2) - Math.pow (Math.abs(right_r - r),2));
+
+    /* draw the right twin circle first */
+    context.beginPath();
+    context.arc(dragCircle.attrs.x + r, y -  right_twin_ypos, r, 0, 2 * Math.PI, false);
+    this.fill();
+    this.stroke();
+
+    /* draw the left twin circle next  */
+    context.beginPath();
+    context.arc(dragCircle.attrs.x - r, y -  left_twin_ypos, r, 0, 2 * Math.PI, false);
+    this.fill();
+    this.stroke();
+
+  },
+  fill: "lime",
+  stroke: "black",
+  strokeWidth: 3
+});
+
+var verticalTangentLine = new Kinetic.Shape({
+  drawFunc: function() {
+    var context = this.getContext();
+    context.beginPath();  
+    context.moveTo(dragCircle.attrs.x, y);
+    context.lineTo(dragCircle.attrs.x, y - Math.sqrt(Math.pow(300 - padding, 2) - Math.pow(300 - dragCircle.attrs.x, 2)));
+    this.stroke();
+    },
+    stroke: "blue",
+    strokeWidth: 3
 });
 
 var tangentLine = new Kinetic.Shape({
@@ -165,6 +207,9 @@ backLayer.add(largeArc);
 dragLayer.add(dragCircle);
 arcLayer.add(rightArc);
 arcLayer.add(leftArc);
+
+arcLayer.add(twinCircle);
+arcLayer.add(verticalTangentLine);
 arcLayer.add(tangentLine);
 stage.add(backLayer);
 stage.add(arcLayer);
