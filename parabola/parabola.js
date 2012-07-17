@@ -16,15 +16,9 @@ $(document).ready(function() {
     return (x*x)/(4*focal_point.Y());
   });
 
-  //create a point to glide along the x-axis (to use to move the reflected ray
-  var x_axis = board.create('line', [[-100, 0], [100, 0]], {visible:false});
-  var ray_glider = board.create('point', [100, 0]);
-  ray_glider.makeGlider(x_axis);
 
-  //attache a point along the parabola to this glider
-  var p = board.create('point', [function() { return ray_glider.X(); }, function(){
-    return Math.pow(ray_glider.X(),2)/(4*focal_point.Y());
-  }], {visible:false});
+  var p = board.create('point', [100, (100*100)/4*focal_point.Y()]);
+  p.makeGlider(parab);
 
   //create a second point to create a vertical line
   var ray_point = board.create('point', [function(){ return p.X(); }, function() {
@@ -39,8 +33,6 @@ $(document).ready(function() {
   var incoming_ray = board.create('arrow', [p, ray_point], {strokecolor:'red', name:'Incoming Beam', withLabel:true});
 
   var reflected = board.create('segment', [focal_point, p], {strokecolor:'green', name:'Reflected Beam'});
-
-
 
 });
 
