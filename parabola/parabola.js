@@ -21,14 +21,14 @@ $(document).ready(function() {
   p.makeGlider(parab);
 
   //create a second point to create a vertical line
-  var ray_point = board.create('point', [function(){ return p.X(); }, function() {
-    var a = 1000;
+ var ray_point = board.create('point', [function(){ return p.X(); }, function() {
+   var a = 1000;
+    //make sure the points stay aligned to each other as p moves
     if(p.Y() < 0){
       a = -a;
     }
     return p.Y() + 2 * a; 
   }]);
-
 
   var incoming_ray = board.create('arrow', [p, ray_point], {strokecolor:'red', name:'Incoming Beam', withLabel:true});
 
