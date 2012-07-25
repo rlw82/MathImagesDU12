@@ -1,38 +1,67 @@
 $(document).ready(function() { 
 
-  river_color = "lightblue";
+  //options
+  river_color = "blue";
   island_color = "brown";
   bridge_color = "black";
+  bridge_width = 50;
   islands = [];
+  island_layer = null;
+  bridge_layer = null;
   bridges = [];
   stage = null;
   line = null;
   river = null;
+  river_layer = null;
   layer = null;
   started = false;  
+  grass = null;
 
   init();
 
   function init(){
+
+    grass = new Image();
+ 
+
+    grass.src = "grass.jpeg";
+
     stage = new Kinetic.Stage({
       container: "bridges",
       height: 400,
       width: 600
     });
 
-    layer = new Kinetic.Layer();
+    river_layer = new Kinetic.Layer();
+    bridge_layer = new Kinetic.Layer();
+    island_layer = new Kinetic.Layer();
 
     river = new Kinetic.Rect({
       height:stage.attrs.height,
       width:stage.attrs.width,
-      fill: river_color,
+      fill: {
+        start: {
+          x: 0,
+          y: 0,
+        },
+        end: {
+          x: 600,
+          y: 400  
+        },
+        colorStops: [0, 'lightblue', 1, 'blue']
+      }
     });
 
-    layer.add(river);
-    add_islands();
+    river_layer.add(river);
+//    add_islands();
+    grass.onload = add_islands();
+    bridge_layer = new Kinetic.Layer();
     add_bridges();
 
-    stage.add(layer);
+    stage.add(river_layer);
+    stage.add(island_layer);
+    stage.add(bridge_layer);
+
 
     add_events();
   }
@@ -43,19 +72,20 @@ $(document).ready(function() {
     $('#bridges').on('mousedown', function(){
       console.log("Mouse Down");
       started = true;
-      if(line == null || line.atrrs.points.length == 1){
+      if(null == line){
         line = null;
         var position = stage.getMousePosition();
         line = new Kinetic.Line({
           points: [position.x, position.y],
-          stroke: 10
+          strokeWidth: 5,
         });
-        layer.add(line);
+        bridge_layer.add(line);
       }
     });
 
     $('#bridges').on('mouseup', function(){
       console.log("Mouse Up");
+      reset_game();
       started = false;
     });
 
@@ -84,7 +114,7 @@ $(document).ready(function() {
     bridges[6].rect.on('mouseover', function(){ check_bridge(bridges[6]); });
     
     river.on('mouseover', function() {
-      if(line != null){
+      if(null != line && true == started){
         alert("You can't swim! Start over!");
         reset_game();
       }
@@ -101,13 +131,13 @@ $(document).ready(function() {
 
   function reset_game(){
     reset_bridges();
-    layer.remove(line);
+    bridge_layer.remove(line);
     line = null;
     started = false;
   }
 
   function check_bridge(bridge){
-    if(started == true){
+    if(true == started){
       if(bridge.crossed == true){
         alert("This bridge has been crossed. Please start over");
         reset_bridges();
@@ -134,13 +164,13 @@ $(document).ready(function() {
   }
 
   function add_bridges(){
-    bridges[0] = draw_bridge(75, 20, 100, 243);
-    bridges[1] = draw_bridge(75, 20, 233, 243);
-    bridges[2] = draw_bridge(75, 20, 100, 97);
-    bridges[3] = draw_bridge(75, 20, 233, 83);
-    bridges[4] = draw_bridge(20, 75, 363, 45);
-    bridges[5] = draw_bridge(20, 75, 363, 183);
-    bridges[6] = draw_bridge(20, 75, 363, 333);
+    bridges[0] = draw_bridge(75, bridge_width, 100, 243);
+    bridges[1] = draw_bridge(75, bridge_width, 233, 243);
+    bridges[2] = draw_bridge(75, bridge_width, 100, 97);
+    bridges[3] = draw_bridge(75, bridge_width, 233, 83);
+    bridges[4] = draw_bridge(bridge_width, 75, 363, 45);
+    bridges[5] = draw_bridge(bridge_width, 75, 363, 183);
+    bridges[6] = draw_bridge(bridge_width, 75, 363, 333);
   }
 
   function draw_island(h, w, X, Y){
@@ -149,9 +179,12 @@ $(document).ready(function() {
       width: w,
       x: X,
       y: Y,
-      fill: island_color
+      fill: {
+        image: grass,
+        offset: [-50, 100]
+      }
     });
-    layer.add(temp);
+    island_layer.add(temp);
     return temp;
   }
 
@@ -163,7 +196,7 @@ $(document).ready(function() {
       y: Y,
       fill: bridge_color
     }), false);
-    layer.add(temp.rect);
+    bridge_layer.add(temp.rect);
     return temp;
   }
 });
