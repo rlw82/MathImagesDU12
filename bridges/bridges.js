@@ -5,153 +5,165 @@ $(document).ready(function() {
   bridge_color = "black";
   islands = [];
   bridges = [];
-  player = null;
+  stage = null;
+  line = null;
+  river = null;
+  layer = null;
+  started = false;  
 
-  var stage = new Kinetic.Stage({
-    container: "bridges",
-    height: 400,
-    width: 600
-  });
+  init();
 
-  var background = new Kinetic.Layer();
+  function init(){
+    stage = new Kinetic.Stage({
+      container: "bridges",
+      height: 400,
+      width: 600
+    });
 
-  var river = new Kinetic.Rect({
-    height:stage.attrs.height,
-    width:stage.attrs.width,
-    fill: river_color,
-  });
+    layer = new Kinetic.Layer();
 
-  background.add(river);
-  add_islands(background);
-  add_bridges(background, islands);
+    river = new Kinetic.Rect({
+      height:stage.attrs.height,
+      width:stage.attrs.width,
+      fill: river_color,
+    });
 
-  player = islands[2];
+    layer.add(river);
+    add_islands();
+    add_bridges();
 
-  stage.add(background);
+    stage.add(layer);
 
-  for(i = 0; i < 7; i++){
-    bridges[i].rect.on('click', function(){
-      if(bridges[i].crossed){
-        Console.log("This bridge has been crossed!");
+    add_events();
+  }
+
+  function add_events(){
+   
+    //draw events
+    $('#bridges').on('mousedown', function(){
+      console.log("Mouse Down");
+      started = true;
+      if(line == null || line.atrrs.points.length == 1){
+        line = null;
+        var position = stage.getMousePosition();
+        line = new Kinetic.Line({
+          points: [position.x, position.y],
+          stroke: 10
+        });
+        layer.add(line);
       }
-      this.setFill("red");
-      bridges[i].crossed = true;
-      background.draw();
-    });
-  };
-
-  function add_islands(layer){
-
-    islands[0] = new Kinetic.Rect({
-      height: stage.attrs.height/3 - 20,
-      width: 2*stage.attrs.width/3 - 10,
-      fill: island_color,
     });
 
-
-    islands[1] = new Kinetic.Rect({
-      height: stage.attrs.height/3 - 10,
-      width: 2*stage.attrs.width/3 - 10,
-      y: stage.attrs.height/3,
-      fill: island_color,
+    $('#bridges').on('mouseup', function(){
+      console.log("Mouse Up");
+      started = false;
     });
 
-
-    islands[2] = new Kinetic.Rect({
-      height: stage.attrs.height/3 -10,
-      width: 2*stage.attrs.width/3 - 10,
-      y:stage.attrs.height/3*2+10,
-      fill: island_color,
+    $('#bridges').on('mousemove', function(){
+      var position = stage.getMousePosition();
+      if(started == true && position.x != undefined && position.y != undefined)  {
+        var X = position.x;
+        var Y = position.y;
+        line.attrs.points.push({x:X, y:Y});
+        console.log("Mouse Move");
+        stage.draw();
+      } 
     });
 
-
-    islands[3] = new Kinetic.Rect({
-      height: stage.attrs.height,
-      width: stage.attrs.width/3 - 10,
-      fill: island_color,
-      x: stage.attrs.width/3*2 + 10
+    $('#bridge').on('mouseleave', function(){
+      started = false;
     });
 
-    layer.add(islands[0]);
-    layer.add(islands[1]);
-    layer.add(islands[2]);
-    layer.add(islands[3]);
+    //bridge crossing events
+    bridges[0].rect.on('mouseover', function(){ check_bridge(bridges[0]); });
+    bridges[1].rect.on('mouseover', function(){ check_bridge(bridges[1]); });
+    bridges[2].rect.on('mouseover', function(){ check_bridge(bridges[2]); });
+    bridges[3].rect.on('mouseover', function(){ check_bridge(bridges[3]); });
+    bridges[4].rect.on('mouseover', function(){ check_bridge(bridges[4]); });
+    bridges[5].rect.on('mouseover', function(){ check_bridge(bridges[5]); });
+    bridges[6].rect.on('mouseover', function(){ check_bridge(bridges[6]); });
+    
+    river.on('mouseover', function() {
+      if(line != null){
+        alert("You can't swim! Start over!");
+        reset_game();
+      }
+    });
 
+  }
+
+  function reset_bridges(){
+    for(i = 0; i < bridges.length; i++){
+      bridges[i].crossed = false;
+      bridges[i].rect.setFill("black");
+    }
+  }
+
+  function reset_game(){
+    reset_bridges();
+    layer.remove(line);
+    line = null;
+    started = false;
+  }
+
+  function check_bridge(bridge){
+    if(started == true){
+      if(bridge.crossed == true){
+        alert("This bridge has been crossed. Please start over");
+        reset_bridges();
+        layer.remove(line);
+        line = null;
+      } else {
+        bridge.crossed = true;
+        bridge.rect.setFill('red');
+      }
+      stage.draw();
+    }
+  }
+
+  function add_islands(){
+    islands[0] = draw_island(126, 390, 0, 0);
+    islands[1] = draw_island(126, 390, 0, 143);
+    islands[2] = draw_island(126, 390, 0, 286); 
+    islands[3] = draw_island(400, 190, 410, 0);
   } 
 
-  function Bridge(end_point1, end_point2, rect, crossed){
+  function Bridge(rect, crossed){
     this.rect = rect;
-    this.end_point1 = end_point1;
-    this.end_point2 = end_point2;
     this.crossed  = crossed;
   }
 
-  function add_bridges(layer, islands){
-    bridges[0] = new Bridge(islands[1], islands[2], new Kinetic.Rect({
-      height: 75,
-      width: 20,
-      x: 100,
-      y: 233,
+  function add_bridges(){
+    bridges[0] = draw_bridge(75, 20, 100, 243);
+    bridges[1] = draw_bridge(75, 20, 233, 243);
+    bridges[2] = draw_bridge(75, 20, 100, 97);
+    bridges[3] = draw_bridge(75, 20, 233, 83);
+    bridges[4] = draw_bridge(20, 75, 363, 45);
+    bridges[5] = draw_bridge(20, 75, 363, 183);
+    bridges[6] = draw_bridge(20, 75, 363, 333);
+  }
+
+  function draw_island(h, w, X, Y){
+    var temp = new Kinetic.Rect({
+      height: h, 
+      width: w,
+      x: X,
+      y: Y,
+      fill: island_color
+    });
+    layer.add(temp);
+    return temp;
+  }
+
+  function draw_bridge(h, w, X, Y){
+    temp =  new Bridge( new Kinetic.Rect({
+      height: h,
+      width: w,
+      x: X,
+      y: Y,
       fill: bridge_color
     }), false);
-    layer.add(bridges[0].rect);
-  
-
-  bridges[1] = new Bridge(islands[1], islands[2], new Kinetic.Rect({
-    height: 75,
-    width: 20,
-    x: 233,
-    y: 233,
-    fill: bridge_color
-  }), false);
-  layer.add(bridges[1].rect);
-
-
-  bridges[2] = new Bridge(islands[0], islands[1], new Kinetic.Rect({
-    height: 75,
-    width: 20,
-    x: 100,
-    y: 83,
-    fill: bridge_color
-  }), false);
-  layer.add(bridges[2].rect);
-
-  bridges[3] = new Bridge(islands[0], islands[1], new Kinetic.Rect({
-    height:75,
-    width: 20,
-    x: 233,
-    y: 83,
-    fill: bridge_color
-  }), false);
-  layer.add(bridges[3].rect);
-    
-  bridges[4] = new Bridge(islands[0], islands[3], new Kinetic.Rect({
-    height:20,
-    width: 75,
-    x: 363,
-    y: 45,
-    fill: bridge_color
-  }), false);
-  layer.add(bridges[4].rect);
-
-  bridges[5] = new Bridge(islands[1], islands[3], new Kinetic.Rect({
-    height:20,
-    width: 75,
-    x: 363,
-    y: 183,
-    fill: bridge_color
-  }), false);
-  layer.add(bridges[5].rect);
-  
-  bridges[6] = new Bridge(islands[2], islands[3], new Kinetic.Rect({
-    height:20,
-    width: 75,
-    x: 363,
-    y: 333,
-    fill: bridge_color
-  }), false);
-  layer.add(bridges[6].rect);
- }
-
-  
+    layer.add(temp.rect);
+    return temp;
+  }
 });
