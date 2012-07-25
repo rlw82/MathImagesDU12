@@ -94,8 +94,8 @@ function drawCurves() {
   var bs = layer.bspline;
   var bezier = layer.bezier;
 
-  bsplineArray =
-    Array({x:anchor1.attrs.x, y:anchor1.attrs.y},
+  bsplineArray = Array(
+        {x:anchor1.attrs.x, y:anchor1.attrs.y},
         {x:bs.control1.attrs.x, y:bs.control1.attrs.y},
         {x:bs.control2.attrs.x, y:bs.control2.attrs.y}, 
         {x:anchor2.attrs.x, y:anchor2.attrs.y});
@@ -115,15 +115,14 @@ function drawCurves() {
   context.strokeStyle = "blue";
   context.lineWidth = 4;
   context.stroke();
-
 }
 
 window.onload = function() {
 
   var stage = new Kinetic.Stage({
     container: "container",
-      width: 600,
-      height: 600
+    width: 600,
+    height: 600
   });
 
   var layer = new Kinetic.Layer({
@@ -139,77 +138,77 @@ window.onload = function() {
     height: 75,
     stroke: "black",
     strokeWidth: 2,
-    });
+  });
 
   var bsplineKeyBg = new Kinetic.Rect({
     x: 150,
-    y: 400,
-    width: 75,
-    height: 12,
-    stroke: "green",
-    fill: "green",
-    strokeWidth: 10,
+      y: 400,
+      width: 75,
+      height: 12,
+      stroke: "green",
+      fill: "green",
+      strokeWidth: 10,
   });
 
   var bezierKeyBg = new Kinetic.Rect({
     x: 150,
-    y: 420,
-    width: 75,
-    height: 12,
-    stroke: "blue",
-    fill: "blue",
-    strokeWidth: 10,
+      y: 420,
+      width: 75,
+      height: 12,
+      stroke: "blue",
+      fill: "blue",
+      strokeWidth: 10,
   });
 
   var quadKeyBg = new Kinetic.Rect({
     x: 150,
-    y: 440,
-    width: 75,
-    height: 12,
-    stroke: "red",
-    fill: "red",
-    strokeWidth: 10,
+      y: 440,
+      width: 75,
+      height: 12,
+      stroke: "red",
+      fill: "red",
+      strokeWidth: 10,
+  });
+
+  var titleKey = new Kinetic.Text({
+    x: 10,
+      y: 365,
+      text: "Key:",
+      fontSize: 14,
+      fontFamily: "Arial",
+      fontStyle: "bold",
+      textFill: "black",
   });
 
   var bezierKey = new Kinetic.Text({
     x: 10,
-    y: 440,
-    text: "Bezier Curve",
-    fontSize: 12,
-    fontFamily: "Arial",
-    fontStyle: "bold",
-    textFill: "black",
-    });
-
-  var titleKey = new Kinetic.Text({
-    x: 10,
-    y: 365,
-    text: "Key:",
-    fontSize: 14,
-    fontFamily: "Arial",
-    fontStyle: "bold",
-    textFill: "black",
-    });
+      y: 440,
+      text: "Bezier Curve",
+      fontSize: 12,
+      fontFamily: "Arial",
+      fontStyle: "bold",
+      textFill: "black",
+  });
 
   var bsplineKey = new Kinetic.Text({
     x: 10,
-    y: 420,
-    text: "B-Spline Curve",
-    fontSize: 12,
-    fontFamily: "Arial",
-    fontStyle: "bold",
-    textFill: "black",
-    });
+      y: 420,
+      text: "B-Spline Curve",
+      fontSize: 12,
+      fontFamily: "Arial",
+      fontStyle: "bold",
+      textFill: "black",
+  });
 
   var quadKey = new Kinetic.Text({
     x: 10,
-    y: 400,
-    text: "Quadratic Curve",
-    fontSize: 12,
-    fontFamily: "Arial",
-    fontStyle: "bold",
-    textFill: "black",
-    });
+      y: 400,
+      text: "Quadratic Curve",
+      fontSize: 12,
+      fontFamily: "Arial",
+      fontStyle: "bold",
+      textFill: "black",
+  });
 
   var quadLine = new Kinetic.Line({
     dashArray: [10, 10, 0, 10],
@@ -240,7 +239,6 @@ window.onload = function() {
       alpha: 0.3
   });
 
-
   var bsplineLine = new Kinetic.Shape({
     drawFunc: function() {
                 var context = this.getContext();
@@ -262,7 +260,7 @@ window.onload = function() {
   key.add(quadKey);
   key.add(bezierKey);
   key.add(bsplineKey);
- 
+
   layer.add(bsplineLine);
   layer.add(bsDashLine);
   layer.add(quadLine);
