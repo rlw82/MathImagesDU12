@@ -6,10 +6,13 @@ $(document).ready(function() {
   bridge_color = "black";
   bridge_width = 50;
   islands = [];
+  island_layer = null;
+  bridge_layer = null;
   bridges = [];
   stage = null;
   line = null;
   river = null;
+  river_layer = null;
   layer = null;
   started = false;  
   grass = null;
@@ -29,7 +32,9 @@ $(document).ready(function() {
       width: 600
     });
 
-    layer = new Kinetic.Layer();
+    river_layer = new Kinetic.Layer();
+    bridge_layer = new Kinetic.Layer();
+    island_layer = new Kinetic.Layer();
 
     river = new Kinetic.Rect({
       height:stage.attrs.height,
@@ -47,12 +52,16 @@ $(document).ready(function() {
       }
     });
 
-    layer.add(river);
+    river_layer.add(river);
 //    add_islands();
     grass.onload = add_islands();
+    bridge_layer = new Kinetic.Layer();
     add_bridges();
 
-    stage.add(layer);
+    stage.add(river_layer);
+    stage.add(island_layer);
+    stage.add(bridge_layer);
+
 
     add_events();
   }
@@ -70,7 +79,7 @@ $(document).ready(function() {
           points: [position.x, position.y],
           strokeWidth: 5,
         });
-        layer.add(line);
+        bridge_layer.add(line);
       }
     });
 
@@ -122,7 +131,7 @@ $(document).ready(function() {
 
   function reset_game(){
     reset_bridges();
-    layer.remove(line);
+    bridge_layer.remove(line);
     line = null;
     started = false;
   }
@@ -175,7 +184,7 @@ $(document).ready(function() {
         offset: [-50, 100]
       }
     });
-    layer.add(temp);
+    island_layer.add(temp);
     return temp;
   }
 
@@ -187,7 +196,7 @@ $(document).ready(function() {
       y: Y,
       fill: bridge_color
     }), false);
-    layer.add(temp.rect);
+    bridge_layer.add(temp.rect);
     return temp;
   }
 });
