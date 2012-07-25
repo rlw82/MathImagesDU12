@@ -130,6 +130,77 @@ window.onload = function() {
     drawFunc: drawCurves
   });
 
+  var key = new Kinetic.Layer();
+
+  var bsplineKeyBg = new Kinetic.Rect({
+    x: 150,
+    y: 400,
+    width: 1000,
+    height: 12,
+    stroke: "green",
+    fill: "green",
+    strokeWidth: 10,
+  });
+
+  var bezierKeyBg = new Kinetic.Rect({
+    x: 150,
+    y: 420,
+    width: 1000,
+    height: 12,
+    stroke: "blue",
+    fill: "blue",
+    strokeWidth: 10,
+  });
+
+  var quadKeyBg = new Kinetic.Rect({
+    x: 150,
+    y: 440,
+    width: 1000,
+    height: 12,
+    stroke: "red",
+    fill: "red",
+    strokeWidth: 10,
+  });
+
+  var bezierKey = new Kinetic.Text({
+    x: 10,
+    y: 440,
+    stroke: "white",
+    strokeWidth: 10,
+    fill: "white",
+    text: "Bezier Curve",
+    fontSize: 12,
+    fontFamily: "Arial",
+    fontStyle: "bold",
+    textFill: "black",
+    });
+
+  var bsplineKey = new Kinetic.Text({
+    x: 10,
+    y: 420,
+    stroke: "white",
+    strokeWidth: 10,
+    fill: "white",
+    text: "B-Spline Curve",
+    fontSize: 12,
+    fontFamily: "Arial",
+    fontStyle: "bold",
+    textFill: "black",
+    });
+
+  var quadKey = new Kinetic.Text({
+    x: 10,
+    y: 400,
+    stroke: "white",
+    strokeWidth: 10,
+    fill: "white",
+    text: "Quadratic Curve",
+    fontSize: 12,
+    fontFamily: "Arial",
+    fontStyle: "bold",
+    textFill: "black",
+    });
+
   var quadLine = new Kinetic.Line({
     dashArray: [10, 10, 0, 10],
       strokeWidth: 3,
@@ -172,6 +243,14 @@ window.onload = function() {
       strokeWidth: 3
   });
 
+  key.add(quadKeyBg);
+  key.add(bezierKeyBg);
+  key.add(bsplineKeyBg);
+
+  key.add(quadKey);
+  key.add(bezierKey);
+  key.add(bsplineKey);
+ 
   layer.add(bsplineLine);
   layer.add(bsDashLine);
   layer.add(quadLine);
