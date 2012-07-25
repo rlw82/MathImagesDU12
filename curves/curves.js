@@ -174,8 +174,6 @@ window.onload = function() {
   var bezierKey = new Kinetic.Text({
     x: 10,
     y: 440,
-    stroke: "white",
-    fill: "white",
     text: "Bezier Curve",
     fontSize: 12,
     fontFamily: "Arial",
@@ -186,8 +184,6 @@ window.onload = function() {
   var titleKey = new Kinetic.Text({
     x: 10,
     y: 365,
-    stroke: "white",
-    fill: "white",
     text: "Key:",
     fontSize: 14,
     fontFamily: "Arial",
@@ -198,8 +194,6 @@ window.onload = function() {
   var bsplineKey = new Kinetic.Text({
     x: 10,
     y: 420,
-    stroke: "white",
-    fill: "white",
     text: "B-Spline Curve",
     fontSize: 12,
     fontFamily: "Arial",
@@ -210,8 +204,6 @@ window.onload = function() {
   var quadKey = new Kinetic.Text({
     x: 10,
     y: 400,
-    stroke: "white",
-    fill: "white",
     text: "Quadratic Curve",
     fontSize: 12,
     fontFamily: "Arial",
