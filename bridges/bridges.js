@@ -44,6 +44,7 @@ $(document).ready(function() {
       console.log("Mouse Down");
       started = true;
       if(line == null || line.atrrs.points.length == 1){
+        line = null;
         var position = stage.getMousePosition();
         line = new Kinetic.Line({
           points: [position.x, position.y],
@@ -59,8 +60,8 @@ $(document).ready(function() {
     });
 
     $('#bridges').on('mousemove', function(){
-      if(started == true)  {
-        var position = stage.getMousePosition();
+      var position = stage.getMousePosition();
+      if(started == true && position.x != undefined && position.y != undefined)  {
         var X = position.x;
         var Y = position.y;
         line.attrs.points.push({x:X, y:Y});
@@ -102,6 +103,7 @@ $(document).ready(function() {
     reset_bridges();
     layer.remove(line);
     line = null;
+    started = false;
   }
 
   function check_bridge(bridge){
