@@ -2,7 +2,7 @@ bsplineArray = Array({x:10, y:10}, {x:110, y:220}, {x:270, y:220}, {x:370, y:10}
 
 function bspline(context, points) {
   context.beginPath();
-  for (var t = 0; t < 1; t += 0.05) {
+  for (var t = -1; t < 2 ; t += 0.05) {
     var ax = (-points[0].x + 3*points[1].x - 3*points[2].x + points[3].x) / 6;
     var ay = (-points[0].y + 3*points[1].y - 3*points[2].y + points[3].y) / 6;
     var bx = (points[0].x - 2*points[1].x + points[2].x) / 2;
@@ -140,19 +140,9 @@ window.onload = function() {
     strokeWidth: 2,
   });
 
-  var bsplineKeyBg = new Kinetic.Rect({
-    x: 150,
-      y: 400,
-      width: 75,
-      height: 12,
-      stroke: "green",
-      fill: "green",
-      strokeWidth: 10,
-  });
-
   var bezierKeyBg = new Kinetic.Rect({
     x: 150,
-      y: 420,
+      y: 440,
       width: 75,
       height: 12,
       stroke: "blue",
@@ -160,9 +150,19 @@ window.onload = function() {
       strokeWidth: 10,
   });
 
+  var bsplineKeyBg = new Kinetic.Rect({
+    x: 150,
+      y: 420,
+      width: 75,
+      height: 12,
+      stroke: "green",
+      fill: "green",
+      strokeWidth: 10,
+  });
+
   var quadKeyBg = new Kinetic.Rect({
     x: 150,
-      y: 440,
+      y: 400,
       width: 75,
       height: 12,
       stroke: "red",
