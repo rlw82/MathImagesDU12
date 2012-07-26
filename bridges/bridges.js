@@ -99,7 +99,8 @@ $(document).ready(function() {
       } 
     });
 
-    $('#bridge').on('mouseleave', function(){
+    $('#bridges').on('mouseleave', function(){
+      reset_game();
       started = false;
     });
 
