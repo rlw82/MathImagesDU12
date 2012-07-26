@@ -4,6 +4,8 @@ $(document).ready(function() {
   river_color = "blue";
   island_color = "brown";
   bridge_color = "black";
+
+  //globals
   bridge_width = 50;
   islands = [];
   island_layer = null;
@@ -20,12 +22,6 @@ $(document).ready(function() {
   init();
 
   function init(){
-
-    grass = new Image();
- 
-
-    grass.src = "grass.jpeg";
-
     stage = new Kinetic.Stage({
       container: "bridges",
       height: 400,
@@ -48,29 +44,29 @@ $(document).ready(function() {
           x: 600,
           y: 400  
         },
-        colorStops: [0, 'lightblue', 1, 'blue']
+        colorStops: [0, '#0080AA', 1, 'blue']
       }
     });
 
     river_layer.add(river);
-//    add_islands();
-    grass.onload = add_islands();
-    bridge_layer = new Kinetic.Layer();
-    add_bridges();
+    grass = new Image();
 
-    stage.add(river_layer);
-    stage.add(island_layer);
-    stage.add(bridge_layer);
+    grass.onload = function(){
+      add_islands();
+      add_bridges();
+      stage.add(river_layer);
+      stage.add(island_layer);
+      stage.add(bridge_layer);
 
-
-    add_events();
+      add_events();
+    }
+    grass.src = "grass.jpeg";
   }
 
   function add_events(){
    
     //draw events
     $('#bridges').on('mousedown', function(){
-      console.log("Mouse Down");
       started = true;
       if(null == line){
         line = null;
@@ -84,18 +80,21 @@ $(document).ready(function() {
     });
 
     $('#bridges').on('mouseup', function(){
-      console.log("Mouse Up");
       reset_game();
       started = false;
     });
 
     $('#bridges').on('mousemove', function(){
       var position = stage.getMousePosition();
-      if(started == true && position.x != undefined && position.y != undefined)  {
+      if(undefined == position){
+        started = false;
+        return;
+      }
+//      console.log(position.x + " , " + position.y); 
+      if(started == true)  {
         var X = position.x;
         var Y = position.y;
         line.attrs.points.push({x:X, y:Y});
-        console.log("Mouse Move");
         stage.draw();
       } 
     });
