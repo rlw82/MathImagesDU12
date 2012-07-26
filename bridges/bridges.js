@@ -18,6 +18,9 @@ $(document).ready(function() {
   layer = null;
   started = false;  
   grass = null;
+  text_layer = null;
+  text_box = null;
+  text = null;
 
   init();
 
@@ -31,6 +34,24 @@ $(document).ready(function() {
     river_layer = new Kinetic.Layer();
     bridge_layer = new Kinetic.Layer();
     island_layer = new Kinetic.Layer();
+    text_layer = new Kinetic.Layer();
+
+    text_box  = new Kinetic.Rect({
+      height:stage.attrs.height,
+      width: stage.attrs.width,
+      fill: 'black',
+      alpha: 0.3
+    });
+    text_layer.add(text_box);
+    text = new Kinetic.Text({
+      x: stage.attrs.width/2,
+      y: stage.attrs.height/2,
+      text: 'Game Over',
+      align: 'center',
+      textFill: 'black',
+//      fontSize: 24
+    });
+    text_layer.add(text);
 
     river = new Kinetic.Rect({
       height:stage.attrs.height,
@@ -57,16 +78,21 @@ $(document).ready(function() {
       stage.add(river_layer);
       stage.add(island_layer);
       stage.add(bridge_layer);
-
+      stage.add(text_layer);
       add_events();
     }
     grass.src = "grass.jpeg";
+    
+    text_layer.hide();
+  
   }
 
   function add_events(){
    
     //draw events
     $('#bridges').on('mousedown', function(){
+      $('#error').text("");
+      text_layer.hide();
       started = true;
       if(null == line){
         line = null;
@@ -100,8 +126,7 @@ $(document).ready(function() {
     });
 
     $('#bridges').on('mouseleave', function(){
-      reset_game();
-      started = false;
+      end_game("You left the city! Drag the mouse to play again!");
     });
 
     //bridge crossing events
@@ -115,11 +140,15 @@ $(document).ready(function() {
     
     river.on('mouseover', function() {
       if(null != line && true == started){
-        alert("You can't swim! Start over!");
-        reset_game();
+        end_game("You can't swim! Drag the mouse to play again");
       }
     });
 
+  }
+  
+  function end_game(message){
+    text.setText(message);
+    text_layer.show();
   }
 
   function reset_bridges(){
@@ -132,6 +161,7 @@ $(document).ready(function() {
   function reset_game(){
     reset_bridges();
     bridge_layer.remove(line);
+    bridge_layer.draw();
     line = null;
     started = false;
   }
@@ -139,9 +169,9 @@ $(document).ready(function() {
   function check_bridge(bridge){
     if(true == started){
       if(bridge.crossed == true){
-        alert("This bridge has been crossed. Please start over");
-        reset_bridges();
-        layer.remove(line);
+        end_game("You already crossed the bridge. Drag the mouse to play again");
+        reset_game();
+        bridge_layer.remove(line);
         line = null;
       } else {
         bridge.crossed = true;
