@@ -1,0 +1,462 @@
+<html>
+<head>
+	<title>Three.js Shape Playground</title>
+
+	<style>
+		body 
+		{
+			background-color: #ccccff;
+		}
+	</style>
+</head>
+<body>
+
+<div id="message"></div>
+
+<script src="js/Three.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/Stats.js"></script>
+<script src="js/THREEx.KeyboardState.js"></script>
+<script src="js/THREEx.FullScreen.js"></script>
+<script src="js/THREEx.WindowResize.js"></script>
+
+<script type='text/javascript' src='js/DAT.GUI.min.js'></script>
+
+<script>
+/* 	Three.js  */
+
+// MAIN
+if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+// standard global variables
+var container, scene, camera, renderer, controls, stats;
+var keyboard = new THREEx.KeyboardState();
+var clock = new THREE.Clock();
+// custom global variables
+var shapes = new Array();
+var current = 0;
+init();
+animate();
+
+// FUNCTIONS 		
+function init() 
+{
+	// SCENE
+	scene = new THREE.Scene();
+	// CAMERA
+	var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+	scene.add(camera);
+	camera.position.set(0,150,400);
+	camera.lookAt(scene.position);	
+	// RENDERER
+	renderer = new THREE.WebGLRenderer( {antialias:true} );
+	renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	container = document.createElement( 'div' );
+	document.body.appendChild( container );
+	container.appendChild( renderer.domElement );
+	// EVENTS
+	THREEx.WindowResize(renderer, camera);
+	THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
+	// CONTROLS
+	// note addition...
+	controls = new THREE.TrackballControls( camera, renderer.domElement );
+	// STATS
+	stats = new Stats();
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.bottom = '0px';
+	stats.domElement.style.zIndex = 100;
+	container.appendChild( stats.domElement );
+	// LIGHT
+	var light = new THREE.PointLight(0xffffff);
+	light.position.set(50,50,50);
+	scene.add(light);
+	var light2 = new THREE.PointLight(0xffffff);
+	light2.position.set(-50,-50,-50);
+	scene.add(light2);
+	
+	var light3 = new THREE.PointLight(0xffffff);
+	light3.position.set(0,200,0);
+	scene.add(light3);
+	
+	
+	var light6 = new THREE.PointLight(0xffffff);
+	light6.position.set(0,-200,0);
+	scene.add(light6);
+	// FLOOR
+
+/*	var floorMaterial = new THREE.MeshBasicMaterial( { color: 0xFFFFFF } );
+	var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+	floor.position.y = -0.5;
+	floor.doubleSided = true;
+	scene.add(floor);*/
+	// SKYBOX/FOG
+	var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
+	var skyBoxMaterial = new THREE.MeshPhongMaterial( { color: 0x9999ff } );
+	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+    skyBox.flipSided = true; // render faces from inside of the cube, instead of from outside (default).
+	// scene.add(skyBox);
+	scene.fog = new THREE.FogExp2( 0x9999ff, 0.00025 );
+
+	// SKYBOX/FOG
+	var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
+	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff } );
+	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+    skyBox.flipSided = true; // render faces from inside of the cube, instead of from outside (default).
+	// scene.add(skyBox);
+	scene.fog = new THREE.FogExp2( 0x9999ff, 0.00025 );
+	
+	////////////
+	// CUSTOM //
+	////////////
+	
+	// Using wireframe materials to illustrate shape details.
+	var darkMaterial = new THREE.MeshPhongMaterial( { color:0xff0000, transparent:true, opacity:1, wireframe: true } );
+	var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true, transparent: true } ); 
+	var darkMaterial2 =  new THREE.MeshPhongMaterial( { color:0xff0000, transparent:true, opacity:1, wireframe: true} );
+	
+	// cube
+	var geo = new THREE.CubeGeometry(50, 50, 50, 1, 1, 1);
+	var shape = new THREE.Mesh(geo, darkMaterial2);
+	shape.position.set(0, 50, 0);
+	shapes.push(shape);
+	scene.add( shape );
+	
+	// icosahedron
+	var geo = new THREE.IcosahedronGeometry( 40, 0);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// radius, subdivisions
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// octahedron
+	var geo = new THREE.OctahedronGeometry( 40, 0);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// tetrahedron
+	var geo = new THREE.TetrahedronGeometry( 40, 0);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// sphere
+	var geo = new THREE.SphereGeometry( 40, 32, 16);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// icosahedron
+	var geo = new THREE.IcosahedronGeometry( 40, 1);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// radius, subdivisions
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// octahedron
+	var geo = new THREE.OctahedronGeometry( 40, 1);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// tetrahedron
+	var geo = new THREE.TetrahedronGeometry( 40, 1);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// dome
+	var geo = new THREE.SphereGeometry( 40, 32, 16, 0, 2 * Math.PI, 0, Math.PI / 2);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// should set material to doubleSided = true so that the 
+	//   interior view does not appear transparent.
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+	
+	// cylinder
+	var geo = new THREE.CylinderGeometry( 30, 30, 80, 20, 4);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// radiusAtTop, radiusAtBottom, height, segmentsAroundRadius, segmentsAlongHeight,
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+	
+	// cone
+	var geo = new THREE.CylinderGeometry( 0, 30, 100, 20, 4);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// radiusAtTop, radiusAtBottom, height, segmentsAroundRadius, segmentsAlongHeight,
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+	
+	// pyramid
+	var geo = new THREE.CylinderGeometry( 0, 30, 100, 4, 4);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// radiusAtTop, radiusAtBottom, height, segmentsAroundRadius, segmentsAlongHeight,
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// torus
+	var geo = new THREE.TorusGeometry( 25, 10, 8, 4);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// radius of entire torus, diameter of tube (less than total radius), 
+		// segments around radius, segments around torus ("sides")
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// torus knot
+	var geo = new THREE.TorusKnotGeometry( 30, 8, 60, 10, 2, 3);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// total knot radius, tube radius, number cylinder segments, sides per cyl. segment,
+		//  p-loops around torus, q-loops around torus
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// prism
+	var geo = new THREE.CylinderGeometry( 30, 30, 80, 6, 4);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// radiusAtTop, radiusAtBottom, height, segmentsAroundRadius, segmentsAlongHeight,
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+	
+	// cone - truncated
+	var geo = new THREE.CylinderGeometry( 10, 30, 100, 20, 4);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// radiusAtTop, radiusAtBottom, height, segmentsAroundRadius, segmentsAlongHeight,
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+	
+	// pyramid - truncated
+	var geo = new THREE.CylinderGeometry( 15, 30, 100, 6, 4);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// radiusAtTop, radiusAtBottom, height, segmentsAroundRadius, segmentsAlongHeight,
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// torus
+	var geo = new THREE.TorusGeometry( 30, 20, 16, 40);
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// radius of entire torus, diameter of tube (less than total radius), 
+		// sides per cylinder segment, cylinders around torus ("sides")
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+
+	// torus knot
+	var geo =  new THREE.TorusKnotGeometry( 30, 6, 160, 10, 3, 7 );
+	var shape = new THREE.Mesh(geo, darkMaterial);
+	// total knot radius, tube radius, number cylinder segments, sides per cyl. segment,
+		//  p-loops around torus, q-loops around torus
+
+	shape.position.set(0, 50, 0);
+	shape.visible = 0;
+	shapes.push(shape);
+	scene.add( shape );
+	
+	gui = new dat.GUI();
+	
+	parameters =
+	{
+			color: "#ff0000",
+			opacity: 1,
+			visible: true,
+			currShape: "Cube",
+			material: "Wireframe",
+			reset: function() { resetShape() }
+	};
+	
+	var cubeColor = gui.addColor( parameters, 'color' ).name('Color').listen();
+	cubeColor.onChange(function(value) // onFinishChange
+	{   shapes[current].material.color.setHex( value.replace("#", "0x") );   });
+	
+	var currentShape = gui.add( parameters, 'currShape', [ "Cube", "Icosahedron 1", "Octahedron 1", "Tetrahedron 1", "Sphere", "Icosahedron 2", "Octahedron 2", "Tetrahedron 2", "Dome", "Cylinder", "Cone", "Pyramid", "Torus 1", "Torus Knot 1", "Prism", "Truncated Cone", "Truncated Pyramid", "Torus 2", "Torus Knot 2"]).name("Shape");
+	currentShape.onChange(function(value)
+	{	updateShape();	});
+	
+	var shapeMaterial = gui.add( parameters, 'material', [ "Basic", "Lambert", "Phong", "Wireframe" ] ).name('Material Type').listen();
+	shapeMaterial.onChange(function(value) 
+	{   updateMat();   });
+	
+	
+	var shapeVisible = gui.add( parameters, 'visible' ).name('Visible?').listen();
+	shapeVisible.onChange(function(value) 
+	{   shapes[current].visible = value;  	});
+	
+	gui.add( parameters, 'reset' ).name("Reset Cube Parameters");
+	
+	changeShape();
+}
+
+function updateMat()
+{
+	for(i = 0; i < shapes.length; i++)
+	{
+		var value = parameters.material;
+		var newMaterial;
+		if (value == "Basic")
+			newMaterial = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+		else if (value == "Lambert")
+			newMaterial = new THREE.MeshLambertMaterial( { color: 0x000000 } );
+		else if (value == "Phong")
+			newMaterial = new THREE.MeshPhongMaterial( { color: 0x000000 } );
+		else // (value == "Wireframe")
+			newMaterial = new THREE.MeshPhongMaterial( { wireframe: true } );
+		shapes[i].material = newMaterial;
+		shapes[i].material.color.setHex( parameters.color.replace("#", "0x") );
+		shapes[i].material.opacity = parameters.opacity;  
+		shapes[i].material.transparent = true;
+	}
+}
+function updateShape()
+{
+	var value = parameters.currShape;
+	
+	switch (value)
+	{
+	case "Cube":
+		current = 0;
+		break;
+	case "Icosahedron 1":
+		current = 1;
+		break;
+	case "Octahedron 1":
+		current = 2;
+		break;
+	case "Tetrahedron 1":
+		current = 3;
+		break;
+	case "Sphere":
+		current = 4;
+		break;
+	case "Icosahedron 2":
+		current = 5;
+		break;
+	case "Octahedron 2":
+		current = 6;
+		break;
+	case "Tetrahedron 2":
+		current = 7;
+		break;
+	case "Dome":
+		current = 8;
+		break;
+	case "Cylinder":
+		current = 9;
+		break;
+	case "Cone":
+		current = 10;
+		break;
+	case "Pyramid":
+		current = 11;
+		break;
+	case "Torus 1":
+		current = 12;
+		break;
+	case "Torus Knot 1":
+		current = 13;
+		break;
+	case "Prism":
+		current = 14;
+		break;
+	case "Truncated Cone":
+		current = 15;
+		break;
+	case "Truncated Pyramid":
+		current = 16;
+		break;
+	case "Torus 2":
+		current = 17;
+		break;
+	case "Torus Knot 2":
+		current = 18;
+		break;
+	}
+	changeShape();
+}
+
+function changeShape()
+{
+	for(i = 0; i < 19; i++)
+	{
+		if(current == i)
+		{
+			shapes[i].visible = 1;
+			shapes[i].material.color.setHex( parameters.color.replace("#", "0x") );
+		}
+		else
+		{
+			shapes[i].visible = 0;
+		}
+	}
+}
+
+function resetShape()
+{
+	parameters.color = "#ff0000";
+	parameters.currShape = "Cube";
+	parameters.opacity = 1;
+	parameters.visible = true;
+	parameters.material = "Wireframe";
+	updateShape();
+	updateMat();
+}
+function animate() 
+{
+    requestAnimationFrame( animate );
+	render();		
+	update();
+}
+
+function update()
+{
+	if ( keyboard.pressed("z") ) 
+	{ 
+		// do something
+	}
+	
+	controls.update();
+	stats.update();
+}
+
+function render() 
+{
+	renderer.render( scene, camera );
+}
+
+</script>
+
+</body>
+</html>
