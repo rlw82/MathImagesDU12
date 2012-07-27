@@ -18,6 +18,7 @@ $(document).ready(function() {
   layer = null;
   started = false;  
   grass = null;
+  cobble = null;
   text_layer = null;
   text_box = null;
   text = null;
@@ -71,17 +72,21 @@ $(document).ready(function() {
 
     river_layer.add(river);
     grass = new Image();
+    cobble = new Image();
 
     grass.onload = function(){
-      add_islands();
-      add_bridges();
-      stage.add(river_layer);
-      stage.add(island_layer);
-      stage.add(bridge_layer);
-      stage.add(text_layer);
-      add_events();
+      cobble.onload = function(){
+        add_islands();
+        add_bridges();
+        stage.add(river_layer);
+        stage.add(island_layer);
+        stage.add(bridge_layer);
+        stage.add(text_layer);
+        add_events();
+      }
     }
     grass.src = "grass.jpeg";
+    cobble.src = "bridge.jpg";
     
     text_layer.hide();
   
@@ -126,7 +131,10 @@ $(document).ready(function() {
     });
 
     $('#bridges').on('mouseleave', function(){
-      end_game("You left the city! Drag the mouse to play again!");
+      if(true == started){
+        end_game("You left the city! Drag the mouse to play again!");
+        bridge_layer.remove(line);
+      }
     });
 
     //bridge crossing events
@@ -141,6 +149,7 @@ $(document).ready(function() {
     river.on('mouseover', function() {
       if(null != line && true == started){
         end_game("You can't swim! Drag the mouse to play again");
+        bridge_layer.remove(line);
       }
     });
 
@@ -149,19 +158,20 @@ $(document).ready(function() {
   function end_game(message){
     text.setText(message);
     text_layer.show();
+    reset_game();
   }
 
   function reset_bridges(){
     for(i = 0; i < bridges.length; i++){
       bridges[i].crossed = false;
-      bridges[i].rect.setFill("black");
+      bridges[i].rect.setAlpha(1);
     }
   }
 
   function reset_game(){
     reset_bridges();
     bridge_layer.remove(line);
-    bridge_layer.draw();
+    stage.draw();
     line = null;
     started = false;
   }
@@ -175,7 +185,7 @@ $(document).ready(function() {
         line = null;
       } else {
         bridge.crossed = true;
-        bridge.rect.setFill('red');
+        bridge.rect.setAlpha(0.3);
       }
       stage.draw();
     }
@@ -197,10 +207,10 @@ $(document).ready(function() {
     bridges[0] = draw_bridge(75, bridge_width, 100, 243);
     bridges[1] = draw_bridge(75, bridge_width, 233, 243);
     bridges[2] = draw_bridge(75, bridge_width, 100, 97);
-    bridges[3] = draw_bridge(75, bridge_width, 233, 83);
+    bridges[3] = draw_bridge(75, bridge_width, 233, 97);
     bridges[4] = draw_bridge(bridge_width, 75, 363, 45);
     bridges[5] = draw_bridge(bridge_width, 75, 363, 183);
-    bridges[6] = draw_bridge(bridge_width, 75, 363, 333);
+    bridges[6] = draw_bridge(bridge_width, 75, 363, 325);
   }
 
   function draw_island(h, w, X, Y){
@@ -224,7 +234,9 @@ $(document).ready(function() {
       width: w,
       x: X,
       y: Y,
-      fill: bridge_color
+      fill: {
+        image: cobble,
+      }
     }), false);
     bridge_layer.add(temp.rect);
     return temp;
