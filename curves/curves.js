@@ -2,6 +2,17 @@ bsplineArray = [{x:10, y:10}, {x:110, y:220}, {x:270, y:220}, {x:370, y:10}];
 
 function bspline(context, points) {
   context.beginPath();
+<<<<<<< HEAD
+  for (var t = -1; t < 2 ; t += 0.05) {
+    var ax = (-points[0].x + 3*points[1].x - 3*points[2].x + points[3].x) / 6;
+    var ay = (-points[0].y + 3*points[1].y - 3*points[2].y + points[3].y) / 6;
+    var bx = (points[0].x - 2*points[1].x + points[2].x) / 2;
+    var by = (points[0].y - 2*points[1].y + points[2].y) / 2;
+    var cx = (-points[0].x +points[2].x) / 2;
+    var cy = (-points[0].y +points[2].y) / 2;
+    var dx = (points[0].x + 4*points[1].x + points[2].x) / 6;
+    var dy = (points[0].y + 4*points[1].y + points[2].y) / 6;
+=======
   var ax = (-points[0].x + 3*points[1].x - 3*points[2].x + points[3].x) / 6;
   var ay = (-points[0].y + 3*points[1].y - 3*points[2].y + points[3].y) / 6;
   var bx = (points[0].x - 2*points[1].x + points[2].x) / 2;
@@ -11,6 +22,7 @@ function bspline(context, points) {
   var dx = (points[0].x + 4*points[1].x + points[2].x) / 6;
   var dy = (points[0].y + 4*points[1].y + points[2].y) / 6;
   for (var t = 0; t < 1; t += 0.05) {
+>>>>>>> 0395f47dd8413f1aeee315e56ff20af8ae3be2e0
     context.moveTo(
         ax*Math.pow(t, 3) + bx*Math.pow(t, 2) + cx*t + dx,
         ay*Math.pow(t, 3) + by*Math.pow(t, 2) + cy*t + dy
@@ -175,9 +187,92 @@ window.onload = function() {
     strokeWidth: 2,
   });
 
+<<<<<<< HEAD
+  var bezierKeyBg = new Kinetic.Rect({
+    x: 150,
+      y: 440,
+      width: 75,
+      height: 12,
+      stroke: "blue",
+      fill: "blue",
+      strokeWidth: 10,
+  });
+
+  var bsplineKeyBg = new Kinetic.Rect({
+    x: 150,
+      y: 420,
+      width: 75,
+      height: 12,
+      stroke: "green",
+      fill: "green",
+      strokeWidth: 10,
+  });
+
+  var quadKeyBg = new Kinetic.Rect({
+    x: 150,
+      y: 400,
+      width: 75,
+      height: 12,
+      stroke: "red",
+      fill: "red",
+      strokeWidth: 10,
+  });
+
+  var titleKey = new Kinetic.Text({
+    x: 10,
+      y: 365,
+      text: "Key:",
+      fontSize: 14,
+      fontFamily: "Arial",
+      fontStyle: "bold",
+      textFill: "black",
+  });
+
+  var bezierKey = new Kinetic.Text({
+    x: 10,
+      y: 440,
+      text: "Bezier Curve",
+      fontSize: 12,
+      fontFamily: "Arial",
+      fontStyle: "bold",
+      textFill: "black",
+  });
+
+  var bsplineKey = new Kinetic.Text({
+    x: 10,
+      y: 420,
+      text: "B-Spline Curve",
+      fontSize: 12,
+      fontFamily: "Arial",
+      fontStyle: "bold",
+      textFill: "black",
+  });
+
+  var quadKey = new Kinetic.Text({
+    x: 10,
+      y: 400,
+      text: "Quadratic Curve",
+      fontSize: 12,
+      fontFamily: "Arial",
+      fontStyle: "bold",
+      textFill: "black",
+  });
+
+  var quadLine = new Kinetic.Line({
+    dashArray: [10, 10, 0, 10],
+      strokeWidth: 3,
+      stroke: "red",
+      lineCap: "round",
+      id: "quadLine",
+      alpha: 0.3
+  });
+
+  var bezierLine = new Kinetic.Line({
+=======
   var bsplineKeyBg = createKeyBg(150, 400, 75, 12, "green");
   var bezierKeyBg= createKeyBg(150, 420, 75, 12, "red");
   var quadKeyBg = createKeyBg(150, 440, 75, 12, "blue");
+>>>>>>> 0395f47dd8413f1aeee315e56ff20af8ae3be2e0
 
   var titleKey = createKeyText("Key: ", 10, 365);
   var bezierKey = createKeyText("Bezier Curve", 10, 440);
