@@ -18,6 +18,10 @@ $(document).ready(function() {
   layer = null;
   started = false;  
   grass = null;
+  cobble = null;
+  text_layer = null;
+  text_box = null;
+  text = null;
 
   init();
 
@@ -31,6 +35,24 @@ $(document).ready(function() {
     river_layer = new Kinetic.Layer();
     bridge_layer = new Kinetic.Layer();
     island_layer = new Kinetic.Layer();
+    text_layer = new Kinetic.Layer();
+
+    text_box  = new Kinetic.Rect({
+      height:stage.attrs.height,
+      width: stage.attrs.width,
+      fill: 'black',
+      alpha: 0.3
+    });
+    text_layer.add(text_box);
+    text = new Kinetic.Text({
+      x: stage.attrs.width/2,
+      y: stage.attrs.height/2,
+      text: 'Game Over',
+      align: 'center',
+      textFill: 'black',
+//      fontSize: 24
+    });
+    text_layer.add(text);
 
     river = new Kinetic.Rect({
       height:stage.attrs.height,
@@ -50,23 +72,32 @@ $(document).ready(function() {
 
     river_layer.add(river);
     grass = new Image();
+    cobble = new Image();
 
     grass.onload = function(){
-      add_islands();
-      add_bridges();
-      stage.add(river_layer);
-      stage.add(island_layer);
-      stage.add(bridge_layer);
-
-      add_events();
+      cobble.onload = function(){
+        add_islands();
+        add_bridges();
+        stage.add(river_layer);
+        stage.add(island_layer);
+        stage.add(bridge_layer);
+        stage.add(text_layer);
+        add_events();
+      }
     }
     grass.src = "grass.jpeg";
+    cobble.src = "bridge.jpg";
+    
+    text_layer.hide();
+  
   }
 
   function add_events(){
    
     //draw events
     $('#bridges').on('mousedown', function(){
+      $('#error').text("");
+      text_layer.hide();
       started = true;
       if(null == line){
         line = null;
@@ -99,8 +130,11 @@ $(document).ready(function() {
       } 
     });
 
-    $('#bridge').on('mouseleave', function(){
-      started = false;
+    $('#bridges').on('mouseleave', function(){
+      if(true == started){
+        end_game("You left the city! Drag the mouse to play again!");
+        bridge_layer.remove(line);
+      }
     });
 
     //bridge crossing events
@@ -114,23 +148,30 @@ $(document).ready(function() {
     
     river.on('mouseover', function() {
       if(null != line && true == started){
-        alert("You can't swim! Start over!");
-        reset_game();
+        end_game("You can't swim! Drag the mouse to play again");
+        bridge_layer.remove(line);
       }
     });
 
+  }
+  
+  function end_game(message){
+    text.setText(message);
+    text_layer.show();
+    reset_game();
   }
 
   function reset_bridges(){
     for(i = 0; i < bridges.length; i++){
       bridges[i].crossed = false;
-      bridges[i].rect.setFill("black");
+      bridges[i].rect.setAlpha(1);
     }
   }
 
   function reset_game(){
     reset_bridges();
     bridge_layer.remove(line);
+    stage.draw();
     line = null;
     started = false;
   }
@@ -138,13 +179,13 @@ $(document).ready(function() {
   function check_bridge(bridge){
     if(true == started){
       if(bridge.crossed == true){
-        alert("This bridge has been crossed. Please start over");
-        reset_bridges();
-        layer.remove(line);
+        end_game("You already crossed the bridge. Drag the mouse to play again");
+        reset_game();
+        bridge_layer.remove(line);
         line = null;
       } else {
         bridge.crossed = true;
-        bridge.rect.setFill('red');
+        bridge.rect.setAlpha(0.3);
       }
       stage.draw();
     }
@@ -166,10 +207,10 @@ $(document).ready(function() {
     bridges[0] = draw_bridge(75, bridge_width, 100, 243);
     bridges[1] = draw_bridge(75, bridge_width, 233, 243);
     bridges[2] = draw_bridge(75, bridge_width, 100, 97);
-    bridges[3] = draw_bridge(75, bridge_width, 233, 83);
+    bridges[3] = draw_bridge(75, bridge_width, 233, 97);
     bridges[4] = draw_bridge(bridge_width, 75, 363, 45);
     bridges[5] = draw_bridge(bridge_width, 75, 363, 183);
-    bridges[6] = draw_bridge(bridge_width, 75, 363, 333);
+    bridges[6] = draw_bridge(bridge_width, 75, 363, 325);
   }
 
   function draw_island(h, w, X, Y){
@@ -193,7 +234,9 @@ $(document).ready(function() {
       width: w,
       x: X,
       y: Y,
-      fill: bridge_color
+      fill: {
+        image: cobble,
+      }
     }), false);
     bridge_layer.add(temp.rect);
     return temp;

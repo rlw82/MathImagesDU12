@@ -1,7 +1,8 @@
-bsplineArray = Array({x:10, y:10}, {x:110, y:220}, {x:270, y:220}, {x:370, y:10} );
+bsplineArray = [{x:10, y:10}, {x:110, y:220}, {x:270, y:220}, {x:370, y:10}];
 
 function bspline(context, points) {
   context.beginPath();
+<<<<<<< HEAD
   for (var t = -1; t < 2 ; t += 0.05) {
     var ax = (-points[0].x + 3*points[1].x - 3*points[2].x + points[3].x) / 6;
     var ay = (-points[0].y + 3*points[1].y - 3*points[2].y + points[3].y) / 6;
@@ -11,6 +12,17 @@ function bspline(context, points) {
     var cy = (-points[0].y +points[2].y) / 2;
     var dx = (points[0].x + 4*points[1].x + points[2].x) / 6;
     var dy = (points[0].y + 4*points[1].y + points[2].y) / 6;
+=======
+  var ax = (-points[0].x + 3*points[1].x - 3*points[2].x + points[3].x) / 6;
+  var ay = (-points[0].y + 3*points[1].y - 3*points[2].y + points[3].y) / 6;
+  var bx = (points[0].x - 2*points[1].x + points[2].x) / 2;
+  var by = (points[0].y - 2*points[1].y + points[2].y) / 2;
+  var cx = (-points[0].x +points[2].x) / 2;
+  var cy = (-points[0].y +points[2].y) / 2;
+  var dx = (points[0].x + 4*points[1].x + points[2].x) / 6;
+  var dy = (points[0].y + 4*points[1].y + points[2].y) / 6;
+  for (var t = 0; t < 1; t += 0.05) {
+>>>>>>> 0395f47dd8413f1aeee315e56ff20af8ae3be2e0
     context.moveTo(
         ax*Math.pow(t, 3) + bx*Math.pow(t, 2) + cx*t + dx,
         ay*Math.pow(t, 3) + by*Math.pow(t, 2) + cy*t + dy
@@ -58,12 +70,12 @@ function buildAnchor(layer, x, y, stroke, fill) {
 
   var anchor = new Kinetic.Circle({
     x: x,
-      y: y,
-      radius: 8,
-      stroke: stroke,
-      fill: fill,
-      strokeWidth: 2,
-      draggable: true
+    y: y,
+    radius: 8,
+    stroke: stroke,
+    fill: fill,
+    strokeWidth: 2,
+    draggable: true
   });
 
   // add hover styling
@@ -77,7 +89,6 @@ function buildAnchor(layer, x, y, stroke, fill) {
     document.body.style.cursor = "default";
     this.setStrokeWidth(2);
     layer.draw();
-
   });
 
   layer.add(anchor);
@@ -94,11 +105,12 @@ function drawCurves() {
   var bs = layer.bspline;
   var bezier = layer.bezier;
 
-  bsplineArray = Array(
+  bsplineArray = [
         {x:anchor1.attrs.x, y:anchor1.attrs.y},
         {x:bs.control1.attrs.x, y:bs.control1.attrs.y},
         {x:bs.control2.attrs.x, y:bs.control2.attrs.y}, 
-        {x:anchor2.attrs.x, y:anchor2.attrs.y});
+        {x:anchor2.attrs.x, y:anchor2.attrs.y}
+  ];
 
   // draw quad
   context.beginPath();
@@ -115,6 +127,41 @@ function drawCurves() {
   context.strokeStyle = "blue";
   context.lineWidth = 4;
   context.stroke();
+}
+
+function createKeyText(text, x, y ){
+  return new Kinetic.Text({
+    x: x,
+    y: y,
+    text: text,
+    fontSize: 12,
+    fontFamily: "Arial",
+    fontStyle: "bold",
+    textFill: "black",
+  });
+}
+
+function createKeyBg(x, y, w, h, color){
+  return new Kinetic.Rect({
+    x: x,
+    y: y,
+    width: w,
+    height: h,
+    stroke: color,
+    fill: color,
+    strokeWidth: 10,
+  });
+}
+
+function createLine(color, id){
+  return  new Kinetic.Line({
+    dashArray: [10, 10, 0, 10],
+      strokeWidth: 3,
+      stroke: color,
+      lineCap: "round",
+      id: id,
+      alpha: 0.3
+  });
 }
 
 window.onload = function() {
@@ -140,6 +187,7 @@ window.onload = function() {
     strokeWidth: 2,
   });
 
+<<<<<<< HEAD
   var bezierKeyBg = new Kinetic.Rect({
     x: 150,
       y: 440,
@@ -220,25 +268,20 @@ window.onload = function() {
   });
 
   var bezierLine = new Kinetic.Line({
+=======
+  var bsplineKeyBg = createKeyBg(150, 400, 75, 12, "green");
+  var bezierKeyBg= createKeyBg(150, 420, 75, 12, "red");
+  var quadKeyBg = createKeyBg(150, 440, 75, 12, "blue");
+>>>>>>> 0395f47dd8413f1aeee315e56ff20af8ae3be2e0
 
-    dashArray: [10, 10, 0, 10],
-      strokeWidth: 3,
-      stroke: "blue",
-      lineCap: "round",
-      id: "bezierLine",
-      alpha: 0.3
-  });
+  var titleKey = createKeyText("Key: ", 10, 365);
+  var bezierKey = createKeyText("Bezier Curve", 10, 440);
+  var bsplineKey = createKeyText("B-Spline Curve", 10, 420); 
+  var quadKey = createKeyText("Quadratic Curve", 10, 400); 
 
-  var bsDashLine = new Kinetic.Line({
-
-    dashArray: [10, 10, 0, 10],
-      strokeWidth: 3,
-      stroke: "green",
-      lineCap: "round",
-      id: "bsDashLine",
-      alpha: 0.3
-  });
-
+  var quadLine = createLine("red", "quadLine");
+  var bezierLine = createLine("blue", "bezierLine");
+  var bsDashLine = createLine("green", "bsDashLine");
   var bsplineLine = new Kinetic.Shape({
     drawFunc: function() {
                 var context = this.getContext();
