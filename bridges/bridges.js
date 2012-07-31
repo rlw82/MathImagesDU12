@@ -49,7 +49,7 @@ $(document).ready(function() {
       y: stage.attrs.height/2,
       text: 'Game Over',
       align: 'center',
-      textFill: 'black',
+      textFill: 'white',
 //      fontSize: 24
     });
     text_layer.add(text);
@@ -185,7 +185,16 @@ $(document).ready(function() {
         line = null;
       } else {
         bridge.crossed = true;
+        var all_crossed = true;
         bridge.rect.setAlpha(0.3);
+        for(var i = 0; i < bridges.length; i++){
+          if(bridges[i].crossed == false){
+            all_crossed = false;
+          }
+        }
+        if(all_crossed == true){
+          end_game("You cheated! Start again!");
+        }
       }
       stage.draw();
     }
