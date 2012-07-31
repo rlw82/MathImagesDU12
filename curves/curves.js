@@ -10,7 +10,7 @@ function bspline(context, points) {
   var cy = (-points[0].y +points[2].y) / 2;
   var dx = (points[0].x + 4*points[1].x + points[2].x) / 6;
   var dy = (points[0].y + 4*points[1].y + points[2].y) / 6;
-  for (var t = 0; t < 1; t += 0.05) {
+  for (var t = -1; t < 2.0; t += 0.05) {
     context.moveTo(
         ax*Math.pow(t, 3) + bx*Math.pow(t, 2) + cx*t + dx,
         ay*Math.pow(t, 3) + by*Math.pow(t, 2) + cy*t + dy
@@ -25,32 +25,16 @@ function bspline(context, points) {
 
 function updateDottedLines(layer) {
 
-  var q = layer.quad;
   var b = layer.bezier;
   var bs = layer.bspline;
 
-  var quadLine = layer.get('#quadLine')[0];
-  var bezierLine = layer.get('#bezierLine')[0];
-  var bsDashLine = layer.get('#bsDashLine')[0];
+  var dashedLine = layer.get('#dashedLine')[0];
 
-  quadLine.setPoints([
-      q.start.attrs.x, q.start.attrs.y, 
-      q.control.attrs.x, q.control.attrs.y, 
-      q.end.attrs.x, q.end.attrs.y
-      ]);
-
-  bsDashLine.setPoints([
-      anchor1.attrs.x, anchor1.attrs.y, 
+  dashedLine.setPoints([
+      control1.attrs.x, control1.attrs.y, 
       bs.control1.attrs.x, bs.control1.attrs.y, 
       bs.control2.attrs.x, bs.control2.attrs.y, 
-      anchor2.attrs.x, anchor2.attrs.y
-      ]);
-
-  bezierLine.setPoints([
-      b.start.attrs.x, b.start.attrs.y, 
-      b.control1.attrs.x, b.control1.attrs.y, 
-      b.control2.attrs.x, b.control2.attrs.y, 
-      b.end.attrs.x, b.end.attrs.y
+      control4.attrs.x, control4.attrs.y
       ]);
 }
 
@@ -94,19 +78,11 @@ function drawCurves() {
   var bezier = layer.bezier;
 
   bsplineArray = [
-        {x:anchor1.attrs.x, y:anchor1.attrs.y},
+        {x:control1.attrs.x, y:control1.attrs.y},
         {x:bs.control1.attrs.x, y:bs.control1.attrs.y},
         {x:bs.control2.attrs.x, y:bs.control2.attrs.y}, 
-        {x:anchor2.attrs.x, y:anchor2.attrs.y}
+        {x:control4.attrs.x, y:control4.attrs.y}
   ];
-
-  // draw quad
-  context.beginPath();
-  context.moveTo(quad.start.attrs.x, quad.start.attrs.y);
-  context.quadraticCurveTo(quad.control.attrs.x, quad.control.attrs.y, quad.end.attrs.x, quad.end.attrs.y);
-  context.strokeStyle = "red";
-  context.lineWidth = 4;
-  context.stroke();
 
   // draw bezier
   context.beginPath();
@@ -170,23 +146,21 @@ window.onload = function() {
     x: 5,
     y: 388,
     width: 230,
-    height: 75,
+    height: 55,
     stroke: "black",
     strokeWidth: 2,
   });
+  
+  var titleKey = createKeyText("Key: ", 10, 365);
 
   var bsplineKeyBg = createKeyBg(150, 400, 75, 12, "green");
+  var bsplineKey = createKeyText("B-Spline Curve", 10, 400); 
+
   var bezierKeyBg= createKeyBg(150, 420, 75, 12, "red");
-  var quadKeyBg = createKeyBg(150, 440, 75, 12, "blue");
+  var bezierKey = createKeyText("Bezier Curve", 10, 420);
 
-  var titleKey = createKeyText("Key: ", 10, 365);
-  var bezierKey = createKeyText("Bezier Curve", 10, 440);
-  var bsplineKey = createKeyText("B-Spline Curve", 10, 420); 
-  var quadKey = createKeyText("Quadratic Curve", 10, 400); 
+  var dashedLine = createLine("grey", "dashedLine");
 
-  var quadLine = createLine("red", "quadLine");
-  var bezierLine = createLine("blue", "bezierLine");
-  var bsDashLine = createLine("green", "bsDashLine");
   var bsplineLine = new Kinetic.Shape({
     drawFunc: function() {
                 var context = this.getContext();
@@ -201,44 +175,36 @@ window.onload = function() {
 
   key.add(titleKey);
   key.add(keyBox);
-  key.add(quadKeyBg);
   key.add(bezierKeyBg);
   key.add(bsplineKeyBg);
 
-  key.add(quadKey);
   key.add(bezierKey);
   key.add(bsplineKey);
 
   layer.add(bsplineLine);
-  layer.add(bsDashLine);
-  layer.add(quadLine);
-  layer.add(bezierLine);
+  layer.add(dashedLine);
 
-  anchor1 = buildAnchor(layer, 50, 300, "#666", "darkgrey");
-  anchor2 = buildAnchor(layer, 450, 300, "#666", "darkgrey");
+  control1 = buildAnchor(layer, 75,  200, "#666", "darkgrey");
+  control2 = buildAnchor(layer, 150, 75, "#666", "darkgrey"),
+  control3 = buildAnchor(layer, 375, 300, "#666", "darkgrey"),
+  control4 = buildAnchor(layer, 450, 200, "#666", "darkgrey");
 
   layer.beforeDraw(function() {
     updateDottedLines(layer);
   });
 
-  layer.quad = {
-    start: anchor1,
-    control: buildAnchor(layer, 250, 90, "darkred", "crimson"),
-    end: anchor2,
-  };
-
   layer.bspline = {
-    start:anchor1,
-    control1: buildAnchor(layer, 90, 60, "darkgreen", "forestgreen"),
-    control2: buildAnchor(layer, 420, 60, "darkgreen", "forestgreen"),
-    end: anchor2,
+    start:control1,
+    control1: control2,
+    control2: control3,
+    end: control4,
   };
 
   layer.bezier = {
-    start: anchor1,
-    control1: buildAnchor(layer, 50, 40, "darkblue", "dodgerblue"),
-    control2: buildAnchor(layer, 450, 40, "darkblue", "dodgerblue"),
-    end: anchor2,
+    start: control1,
+    control1: control2,
+    control2: control3,
+    end: control4,
   };
 
   stage.on("mouseout", function() {
