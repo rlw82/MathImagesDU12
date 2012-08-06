@@ -1,3 +1,4 @@
+//self descriptive
 function getRandomPoints(numPoint, xMax, yMax) {
     var points = new Array();
     var phase = Math.random() * Math.PI * 2;
@@ -15,14 +16,14 @@ function getRandomPoints(numPoint, xMax, yMax) {
     return points
 }
 
-
+//slef descriptive
 function getDistant(cpt, bl) {
     Vy = bl[1][0] - bl[0][0];
     Vx = bl[0][1] - bl[1][1];
     return (Vx * (cpt[0] - bl[0][0]) + Vy * (cpt[1] -bl[0][1]))
 }
 
-
+//would this serve better to only check the points on the side of the baseLine we are looking at now?
 function findMostDistantPointFromBaseLine(baseLine, points) {
     var maxD = 0;
     var maxPt = new Array();
