@@ -89,7 +89,6 @@ function getConvexHull(points) {
 
 
 function plotBaseLine(baseLine,color) {
-    var ctx = document.getElementById('qh_demo').getContext('2d');
     var pt1 = baseLine[0]
     var pt2 = baseLine[1];
     ctx.save()
@@ -106,10 +105,9 @@ function plotBaseLine(baseLine,color) {
 var pts;
 
 function qhPlotPoints() {
-    ctx = document.getElementById('qh_demo').getContext('2d');
     ctx.clearRect(0,0,200,200);
     ctx.fillStyle = 'rgb(0,0,0)';
-    pts = getRandomPoints(250,200,200);
+    pts = getRandomPoints(100,150,150);
     for (var idx in pts) {
         var pt = pts[idx];
         ctx.fillRect(pt[0],pt[1],2,2);
@@ -137,4 +135,6 @@ function qhPlotConvexHull() {
     plotIntermediateBL();
 }
 
-
+ctx = document.getElementById('hull').getContext('2d');
+qhPlotPoints();
+qhPlotConvexHull();
