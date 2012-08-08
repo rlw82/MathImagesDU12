@@ -1,140 +1,139 @@
-//self descriptive
-function getRandomPoints(numPoint, xMax, yMax) {
+$(document).ready(function() {
+
+  function getRandomPoints(numPoint, xMax, yMax) {
     var points = new Array();
     var phase = Math.random() * Math.PI * 2;
     for (var i = 0; i < numPoint/2; i++) {
-        var r =  Math.random()*xMax/4;
-        var theta = Math.random() * 1.5 * Math.PI + phase;
-        points.push( [ xMax /4 + r * Math.cos(theta), yMax/2 + 2 * r * Math.sin(theta) ] )
+      var r =  Math.random()*xMax/4;
+      var theta = Math.random() * 1.5 * Math.PI + phase;
+      points.push( [ xMax /4 + r * Math.cos(theta), yMax/2 + 2 * r * Math.sin(theta) ] )
     }
     var phase = Math.random() * Math.PI * 2;
     for (var i = 0; i < numPoint/2; i++) {
-        var r =  Math.random()*xMax/4;
-        var theta = Math.random() * 1.5 * Math.PI + phase;
-        points.push( [ xMax /4 * 3 +  r * Math.cos(theta), yMax/2 +  r * Math.sin(theta) ] )
+      var r =  Math.random()*xMax/4;
+      var theta = Math.random() * 1.5 * Math.PI + phase;
+      points.push( [ xMax /4 * 3 +  r * Math.cos(theta), yMax/2 +  r * Math.sin(theta) ] )
     }
     return points
-}
+  }
 
-//slef descriptive
-function getDistant(cpt, bl) {
+  function getDistant(cpt, bl) {
     Vy = bl[1][0] - bl[0][0];
     Vx = bl[0][1] - bl[1][1];
     return (Vx * (cpt[0] - bl[0][0]) + Vy * (cpt[1] -bl[0][1]))
-}
+  }
 
-//would this serve better to only check the points on the side of the baseLine we are looking at now?
-function findMostDistantPointFromBaseLine(baseLine, points) {
+  function findMostDistantPointFromBaseLine(baseLine, points) {
     var maxD = 0;
     var maxPt = new Array();
     var newPoints = new Array();
     for (var idx in points) {
-        var pt = points[idx];
-        var d = getDistant(pt, baseLine);
+      var pt = points[idx];
+      var d = getDistant(pt, baseLine);
 
-        if ( d > 0) {
-            newPoints.push(pt);
-        } else {
-            continue;
-        }
+      if ( d > 0) {
+        newPoints.push(pt);
+      } else {
+        continue;
+      }
 
-        if ( d > maxD ) {
-            maxD = d;
-            maxPt = pt;
-        }
+      if ( d > maxD ) {
+        maxD = d;
+        maxPt = pt;
+      }
 
     }
     return {'maxPoint':maxPt, 'newPoints':newPoints}
-}
+  }
 
 
 
 
-var allBaseLines = new Array();
-function buildConvexHull(baseLine, points) {
+  var allBaseLines = new Array();
+  function buildConvexHull(baseLine, points) {
 
-    //plotBaseLine(baseLine,'rgb(180,180,180)');
     allBaseLines.push(baseLine)
-    var convexHullBaseLines = new Array();
+      var convexHullBaseLines = new Array();
     var t = findMostDistantPointFromBaseLine(baseLine, points);
     if (t.maxPoint.length) {
-        convexHullBaseLines = convexHullBaseLines.concat( buildConvexHull( [baseLine[0],t.maxPoint], t.newPoints) );
-        convexHullBaseLines = convexHullBaseLines.concat( buildConvexHull( [t.maxPoint,baseLine[1]], t.newPoints) );
-        return convexHullBaseLines;
+      convexHullBaseLines = convexHullBaseLines.concat( buildConvexHull( [baseLine[0],t.maxPoint], t.newPoints) );
+      convexHullBaseLines = convexHullBaseLines.concat( buildConvexHull( [t.maxPoint,baseLine[1]], t.newPoints) );
+      return convexHullBaseLines;
     } else {
-        return [baseLine];
+      return [baseLine];
     }
-}
+  }
 
 
-function getConvexHull(points) {
-    //find first baseline
+  function getConvexHull(points) {
     var maxX, minX;
     var maxPt, minPt;
     for (var idx in points) {
-        var pt = points[idx];
-        if (pt[0] > maxX || !maxX) {
-            maxPt = pt;
-            maxX = pt[0];
-        }
-        if (pt[0] < minX || !minX) {
-            minPt = pt;
-            minX = pt[0];
-        }
+      var pt = points[idx];
+      if (pt[0] > maxX || !maxX) {
+        maxPt = pt;
+        maxX = pt[0];
+      }
+      if (pt[0] < minX || !minX) {
+        minPt = pt;
+        minX = pt[0];
+      }
     }
     var ch = [].concat(buildConvexHull([minPt, maxPt], points),
-                       buildConvexHull([maxPt, minPt], points))
-    return ch;
-}
+        buildConvexHull([maxPt, minPt], points))
+      return ch;
+  }
 
 
-function plotBaseLine(baseLine,color) {
+  function plotBaseLine(baseLine,color) {
     var pt1 = baseLine[0]
-    var pt2 = baseLine[1];
+      var pt2 = baseLine[1];
     ctx.save()
-    ctx.strokeStyle = color;
+      ctx.strokeStyle = color;
     ctx.beginPath();
     ctx.moveTo(pt1[0],pt1[1]);
     ctx.lineTo(pt2[0],pt2[1]);
     ctx.stroke();
     ctx.restore();
-}
+  }
 
 
 
-var pts;
+  var pts;
 
-function qhPlotPoints() {
+  function qhPlotPoints() {
     ctx.clearRect(0,0,200,200);
     ctx.fillStyle = 'rgb(0,0,0)';
     pts = getRandomPoints(100,150,150);
     for (var idx in pts) {
-        var pt = pts[idx];
-        ctx.fillRect(pt[0],pt[1],2,2);
+      var pt = pts[idx];
+      ctx.fillRect(pt[0],pt[1],2,2);
     }
-}
+  }
 
 
 
-function qhPlotConvexHull() {
+  function qhPlotConvexHull() {
     var ch = getConvexHull(pts);
     var eBL = allBaseLines[0];
     function plotIntermediateBL() {
-        var l = allBaseLines.shift();
-        if (l) {
-            plotBaseLine(l, 'rgb(180,180,180)');
-            setTimeout(plotIntermediateBL, 250);
-        } else {
-            for (var idx in ch) {
-                var baseLine = ch[idx];
-                plotBaseLine(baseLine, 'rgb(255,0,0)');
-            }
-            plotBaseLine(eBL,'rgb(0,255,0)');
+      var l = allBaseLines.shift();
+      if (l) {
+        plotBaseLine(l, 'rgb(180,180,180)');
+        setTimeout(plotIntermediateBL, 250);
+      } else {
+        for (var idx in ch) {
+          var baseLine = ch[idx];
+          plotBaseLine(baseLine, 'rgb(255,0,0)');
         }
+        plotBaseLine(eBL,'rgb(0,255,0)');
+      }
     }
     plotIntermediateBL();
-}
+  }
 
-ctx = document.getElementById('hull').getContext('2d');
-qhPlotPoints();
-qhPlotConvexHull();
+  canvas = $('#hull');
+  ctx = canvas.getContext('2d');
+  qhPlotPoints();
+  qhPlotConvexHull();
+});
