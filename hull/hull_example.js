@@ -1,5 +1,8 @@
 $(document).ready(function() {
 
+  stage = null;
+  layer = null;
+
   function getRandomPoints(numPoint, xMax, yMax) {
     var points = new Array();
     var phase = Math.random() * Math.PI * 2;
@@ -102,8 +105,6 @@ $(document).ready(function() {
   var pts;
 
   function qhPlotPoints() {
-    ctx.clearRect(0,0,200,200);
-    ctx.fillStyle = 'rgb(0,0,0)';
     pts = getRandomPoints(100,150,150);
     for (var idx in pts) {
       var pt = pts[idx];
@@ -132,7 +133,43 @@ $(document).ready(function() {
     plotIntermediateBL();
   }
 
-  canvas = $('#hull');
+//  function init(){
+//    stage = new Kinetic.Stage({
+//      container: 'hull',
+//      height: 400,
+//      width: 400
+//    }); 
+
+//    layer = new Kinetic.Layer();
+
+//    var pts = getRandomPoints(50, 600, 600);
+
+//    var rect = new Kinetic.Rect({
+//      x: 100,
+//      y: 100,
+//      fill: "black"
+//    });    
+
+
+ //   for (var i = 0, i < pts.length, i++) {
+  //    var pt = pts[i];
+   //   layer.add( new Kinetic.Circle({
+   //     x: pt[0],
+   //     y: pt[1],
+   //     radius: 2,
+   //    fill: "black",
+   //     stroke: "black"
+   //   }));
+   // }
+    
+  // stage.add(layer);
+
+  // stage.draw()
+
+//  }
+
+//  init();
+  canvas = document.getElementById('hull');
   ctx = canvas.getContext('2d');
   qhPlotPoints();
   qhPlotConvexHull();
