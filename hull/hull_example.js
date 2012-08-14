@@ -89,15 +89,21 @@ $(document).ready(function() {
 
 
   function plotBaseLine(baseLine,color) {
-    var pt1 = baseLine[0]
-      var pt2 = baseLine[1];
-    ctx.save()
-      ctx.strokeStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(pt1[0],pt1[1]);
-    ctx.lineTo(pt2[0],pt2[1]);
-    ctx.stroke();
-    ctx.restore();
+    var pt1 = baseLine[0];
+    var pt2 = baseLine[1];
+    layer.add(new Kinetic.Line({
+      points: [pt1[0], pt1[1], pt2[0], pt2[1]],
+      fill: color,
+      strokeWidth: 2
+    }));
+//    ctx.save()
+//      ctx.strokeStyle = color;
+//    ctx.beginPath();
+//    ctx.moveTo(pt1[0],pt1[1]);
+//    ctx.lineTo(pt2[0],pt2[1]);
+//    ctx.stroke();
+//    ctx.restore();
+    stage.draw();
   }
 
 
@@ -105,11 +111,19 @@ $(document).ready(function() {
   var pts;
 
   function qhPlotPoints() {
-    pts = getRandomPoints(100,150,150);
+    pts = getRandomPoints(100,550,550);
+//    pts = [[1,1], [5, 200], [50, 70], [100, 200]];
     for (var idx in pts) {
       var pt = pts[idx];
-      ctx.fillRect(pt[0],pt[1],2,2);
+        layer.add( new Kinetic.Circle({
+          radius: 3,
+          x: pt[0],
+          y: pt[1],
+          fill: 'black',
+        }));
+//      ctx.fillRect(pt[0],pt[1],2,2);
     }
+    stage.draw();
   }
 
 
@@ -117,60 +131,68 @@ $(document).ready(function() {
   function qhPlotConvexHull() {
     var ch = getConvexHull(pts);
     var eBL = allBaseLines[0];
-    function plotIntermediateBL() {
-      var l = allBaseLines.shift();
-      if (l) {
-        plotBaseLine(l, 'rgb(180,180,180)');
-        setTimeout(plotIntermediateBL, 250);
-      } else {
-        for (var idx in ch) {
-          var baseLine = ch[idx];
-          plotBaseLine(baseLine, 'rgb(255,0,0)');
-        }
-        plotBaseLine(eBL,'rgb(0,255,0)');
-      }
+    for(var idx in ch){
+      plotBaseLine(ch[idx], 'black');
     }
-    plotIntermediateBL();
+//    function plotIntermediateBL() {
+//      var l = allBaseLines.shift();
+//      if (l) {
+//        plotBaseLine(l, 'rgb(180,180,180)');
+//        setTimeout(plotIntermediateBL, 250);
+//      } else {
+//        for (var idx in ch) {
+//          var baseLine = ch[idx];
+//          plotBaseLine(baseLine, 'rgb(255,0,0)');
+//        }
+//        plotBaseLine(eBL,'rgb(0,255,0)');
+//      }
+//    }
+//    plotIntermediateBL();
   }
 
-//  function init(){
-//    stage = new Kinetic.Stage({
-//      container: 'hull',
-//      height: 400,
-//      width: 400
-//    }); 
+  stage = new Kinetic.Stage({
+    container: 'hull',
+    height: 600,
+    width: 600,
+    listening: true
+  });
+  layer = new Kinetic.Layer();
 
-//    layer = new Kinetic.Layer();
+  stage.add(layer);
 
-//    var pts = getRandomPoints(50, 600, 600);
+  var background = new Kinetic.Rect({
+    x: 0,
+    y: 0,
+    height: stage.attrs.height,
+    width: stage.attrs.width,
+    visible: false,
+    listening: true
+  });
 
-//    var rect = new Kinetic.Rect({
-//      x: 100,
-//      y: 100,
-//      fill: "black"
-//    });    
+  layer.add(background);
+  layer.draw();
+  background.moveToTop();
 
+  background.on("mouseover", function(){
+    console.log("MOUSEOVER");
+  });
 
- //   for (var i = 0, i < pts.length, i++) {
-  //    var pt = pts[i];
-   //   layer.add( new Kinetic.Circle({
-   //     x: pt[0],
-   //     y: pt[1],
-   //     radius: 2,
-   //    fill: "black",
-   //     stroke: "black"
-   //   }));
-   // }
-    
-  // stage.add(layer);
+  background.on('mousedown', function(e){
+    console.log("MOUSEDOWN");
+    var x  = e.X
+    var y = e.Y
+      layer.add( new Kinetic.Circle({
+        radius: 3,
+        x: X,
+        y: Y,
+        fill: 'black',
+      }));
+    pts.push([X, Y]);
+    qhPlotConvexHull();
+  });
 
-  // stage.draw()
-
-//  }
-
-//  init();
-  canvas = document.getElementById('hull');
-  ctx = canvas.getContext('2d');
+//  canvas = document.getElementById('hull');
+//  ctx = canvas.getContext('2d');
   qhPlotPoints();
   qhPlotConvexHull();
 });
