@@ -1,4 +1,3 @@
-bsplineArray = [{x:10, y:10}, {x:110, y:220}, {x:270, y:220}, {x:370, y:10}];
 
 function bspline(context, points) {
   context.beginPath();
@@ -10,25 +9,72 @@ function bspline(context, points) {
   var cy = (-points[0].y +points[2].y) / 2;
   var dx = (points[0].x + 4*points[1].x + points[2].x) / 6;
   var dy = (points[0].y + 4*points[1].y + points[2].y) / 6;
-  for (var t = -1; t < 2.0; t += 0.05) {
+
+  interval = 0.05
+
+  for (var t = -1; t < 2.0; t += interval) {
     context.moveTo(
         ax*Math.pow(t, 3) + bx*Math.pow(t, 2) + cx*t + dx,
         ay*Math.pow(t, 3) + by*Math.pow(t, 2) + cy*t + dy
         );
     context.lineTo(
-        ax*Math.pow(t+0.1, 3) + bx*Math.pow(t+0.1, 2) + cx*(t+0.1) + dx,
-        ay*Math.pow(t+0.1, 3) + by*Math.pow(t+0.1, 2) + cy*(t+0.1) + dy
+        ax*Math.pow(t+interval, 3) + bx*Math.pow(t+interval, 2) + cx*(t+interval) + dx,
+        ay*Math.pow(t+interval, 3) + by*Math.pow(t+interval, 2) + cy*(t+interval) + dy
         );
+  }
+  context.stroke();
+}
+
+function catmullrom(context, points) { 
+  context.beginPath();
+  //  [ -1  3 -3  1 ] 
+  //  [  2 -5  4 -1 ] 
+  //  [ -1  0  1  0 ] 
+  //  [  0  2  0  0 ]   
+  
+
+//   var ax = ( (0 * points[0].x) + (2 * points[1].x) + (0 * points[2].x) + (0 * points[3].x) );
+//   var ay = ( (0 * points[0].y) + (2 * points[1].y) + (0 * points[2].y) + (0 * points[3].y) );
+// 
+//   var bx = ( (-1 * points[0].x) + (0 * points[1].x) + (1 * points[2].x) + (0 * points[3].x) );
+//   var by = ( (-1 * points[0].y) + (0 * points[1].y) + (1 * points[2].y) + (0 * points[3].y) );
+// 
+//   var cx = ( (2 * points[0].x) + (-5 * points[1].x) + (4 * points[2].x) + (-1 * points[3].x) );
+//   var cy = ( (2 * points[0].y) + (-5 * points[1].y) + (4 * points[2].y) + (-1 * points[3].y) );
+// 
+//   var dy = ( (-1 * points[0].y) + (3 * points[1].y) + (-3 * points[2].y) + (-1 * points[3].y) );
+//   var dx = ( (-1 * points[0].x) + (3 * points[1].x) + (-3 * points[2].x) + (-1 * points[3].x) );
+//
+  interval = 0.05
+
+  var ax = (-points[0].x + (3 * points[1].x) + (-3*points[2].x) + points[3].x);
+  var ay = (-points[0].y + (3 * points[1].y) - 3*points[2].y + points[3].y);
+
+  var bx = (2*points[0].x + (-5 * points[1].x) + (4 * points[2].x) + (-1 * points[3].x));
+  var by = (2*points[0].y + (-5 * points[1].y) + (4 * points[2].y) + (-1 *  points[3].y));
+
+  var cx = (-points[0].x + points[2].x );
+  var cy = (-points[0].y + points[2].y );
+
+  var dx = (2*points[1].x);
+  var dy = (2*points[1].y);
+
+  for (var t = -1; t < 2.0; t += interval) {
+    context.moveTo(
+        (ax*Math.pow(t, 3) + bx*Math.pow(t, 2) + cx*t + dx) * 0.5,
+        (ay*Math.pow(t, 3) + by*Math.pow(t, 2) + cy*t + dy) * 0.5 );
+    context.lineTo(
+        (ax*Math.pow(t+interval, 3) + bx*Math.pow(t+interval, 2) + cx*(t+interval) + dx) * 0.5,
+        (ay*Math.pow(t+interval, 3) + by*Math.pow(t+interval, 2) + cy*(t+interval) + dy) * 0.5);
   }
   context.stroke();
 }
 
 function updateDottedLines(layer) {
 
-  var b = layer.bezier;
-  var bs = layer.bspline;
-
   var dashedLine = layer.get('#dashedLine')[0];
+
+  var bs = layer.bspline;
 
   dashedLine.setPoints([
       control1.attrs.x, control1.attrs.y, 
@@ -73,16 +119,9 @@ function drawCurves() {
   var context = this.getContext();
   var layer = this.getLayer();
 
-  var quad = layer.quad;
   var bs = layer.bspline;
+  var catmullrom = layer.catmullrom;
   var bezier = layer.bezier;
-
-  bsplineArray = [
-        {x:control1.attrs.x, y:control1.attrs.y},
-        {x:bs.control1.attrs.x, y:bs.control1.attrs.y},
-        {x:bs.control2.attrs.x, y:bs.control2.attrs.y}, 
-        {x:control4.attrs.x, y:control4.attrs.y}
-  ];
 
   // draw bezier
   context.beginPath();
@@ -130,6 +169,8 @@ function createLine(color, id){
 
 window.onload = function() {
 
+  keys = 0;
+
   var stage = new Kinetic.Stage({
     container: "container",
     width: 600,
@@ -141,30 +182,44 @@ window.onload = function() {
   });
 
   var key = new Kinetic.Layer();
+  var titleKey = createKeyText("Curve Key: ", 10, 365);
 
+  var bsplineKeyBg = createKeyBg(160, 400, 65, 12, "green");
+  var bsplineKey = createKeyText("B-Spline", 10, 400); 
+  key.add(bsplineKeyBg);
+  key.add(bsplineKey);
+  keys = keys + 1;
+
+  var catmullromKeyBg = createKeyBg(160, 440, 65, 12, "red");
+  var catmullromKey = createKeyText("Catmull-rom Spline", 10, 440); 
+  key.add(catmullromKeyBg);
+  key.add(catmullromKey);
+  keys = keys + 1;
+
+  var bezierKeyBg= createKeyBg(160, 420, 65, 12, "blue");
+  var bezierKey = createKeyText("Bezier", 10, 420);
+  key.add(bezierKeyBg);
+  key.add(bezierKey);
+  keys = keys + 1; 
+  
   var keyBox = new Kinetic.Rect({ 
     x: 5,
     y: 388,
     width: 230,
-    height: 55,
+    height: 15 + ( keys * 20),
     stroke: "black",
     strokeWidth: 2,
   });
-  
-  var titleKey = createKeyText("Key: ", 10, 365);
-
-  var bsplineKeyBg = createKeyBg(150, 400, 75, 12, "green");
-  var bsplineKey = createKeyText("B-Spline Curve", 10, 400); 
-
-  var bezierKeyBg= createKeyBg(150, 420, 75, 12, "red");
-  var bezierKey = createKeyText("Bezier Curve", 10, 420);
 
   var dashedLine = createLine("grey", "dashedLine");
 
   var bsplineLine = new Kinetic.Shape({
     drawFunc: function() {
                 var context = this.getContext();
-                bspline(context, bsplineArray);
+                bspline(context, [{x:control1.attrs.x, y:control1.attrs.y},
+                                  {x:layer.bspline.control1.attrs.x, y:layer.bspline.control1.attrs.y},
+                                  {x:layer.bspline.control2.attrs.x, y:layer.bspline.control2.attrs.y}, 
+                                  {x:control4.attrs.x, y:control4.attrs.y}]);
                 this.stroke();
                 this.fill();
               },
@@ -173,15 +228,26 @@ window.onload = function() {
       strokeWidth: 3
   });
 
+  var catmullromLine = new Kinetic.Shape({
+    drawFunc: function() {
+                var context = this.getContext();
+                catmullrom(context, [{x:control1.attrs.x, y:control1.attrs.y},
+                                     {x:layer.catmullromline.control1.attrs.x, y:layer.catmullromline.control1.attrs.y},
+                                     {x:layer.catmullromline.control2.attrs.x, y:layer.catmullromline.control2.attrs.y}, 
+                                     {x:control4.attrs.x, y:control4.attrs.y}]);
+                this.stroke();
+                this.fill();
+              },
+      stroke: "red",
+      fill: "red",
+      strokeWidth: 3
+  });
+
   key.add(titleKey);
   key.add(keyBox);
-  key.add(bezierKeyBg);
-  key.add(bsplineKeyBg);
-
-  key.add(bezierKey);
-  key.add(bsplineKey);
 
   layer.add(bsplineLine);
+  layer.add(catmullromLine);
   layer.add(dashedLine);
 
   control1 = buildAnchor(layer, 75,  200, "#666", "darkgrey");
@@ -194,6 +260,13 @@ window.onload = function() {
   });
 
   layer.bspline = {
+    start:control1,
+    control1: control2,
+    control2: control3,
+    end: control4,
+  };
+
+  layer.catmullromline = {
     start:control1,
     control1: control2,
     control2: control3,
