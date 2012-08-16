@@ -27,37 +27,27 @@ function bspline(context, points) {
 
 function catmullrom(context, points) { 
   context.beginPath();
-  //  [ -1  3 -3  1 ] 
-  //  [  2 -5  4 -1 ] 
+
+  //  [  0  2  0  0 ] 
   //  [ -1  0  1  0 ] 
-  //  [  0  2  0  0 ]   
+  //  [  2 -5  4 -1 ] 
+  //  [ -1  3 -3  1 ]   
   
 
-//   var ax = ( (0 * points[0].x) + (2 * points[1].x) + (0 * points[2].x) + (0 * points[3].x) );
-//   var ay = ( (0 * points[0].y) + (2 * points[1].y) + (0 * points[2].y) + (0 * points[3].y) );
-// 
-//   var bx = ( (-1 * points[0].x) + (0 * points[1].x) + (1 * points[2].x) + (0 * points[3].x) );
-//   var by = ( (-1 * points[0].y) + (0 * points[1].y) + (1 * points[2].y) + (0 * points[3].y) );
-// 
-//   var cx = ( (2 * points[0].x) + (-5 * points[1].x) + (4 * points[2].x) + (-1 * points[3].x) );
-//   var cy = ( (2 * points[0].y) + (-5 * points[1].y) + (4 * points[2].y) + (-1 * points[3].y) );
-// 
-//   var dy = ( (-1 * points[0].y) + (3 * points[1].y) + (-3 * points[2].y) + (-1 * points[3].y) );
-//   var dx = ( (-1 * points[0].x) + (3 * points[1].x) + (-3 * points[2].x) + (-1 * points[3].x) );
-//
+  var ax = ( (0 * points[0].x) + (2 * points[1].x) + (0 * points[2].x) + (0 * points[3].x) );
+  var ay = ( (0 * points[0].y) + (2 * points[1].y) + (0 * points[2].y) + (0 * points[3].y) );
+
+  var bx = ( (-1 * points[0].x) + (0 * points[1].x) + (1 * points[2].x) + (0 * points[3].x) );
+  var by = ( (-1 * points[0].y) + (0 * points[1].y) + (1 * points[2].y) + (0 * points[3].y) );
+
+  var cx = ( (2 * points[0].x) + (-5 * points[1].x) + (4 * points[2].x) + (-1 * points[3].x) );
+  var cy = ( (2 * points[0].y) + (-5 * points[1].y) + (4 * points[2].y) + (-1 * points[3].y) );
+
+  var dy = ( (-1 * points[0].y) + (3 * points[1].y) + (-3 * points[2].y) + (-1 * points[3].y) );
+  var dx = ( (-1 * points[0].x) + (3 * points[1].x) + (-3 * points[2].x) + (-1 * points[3].x) );
+
   interval = 0.05
 
-  var ax = (-points[0].x + (3 * points[1].x) + (-3*points[2].x) + points[3].x);
-  var ay = (-points[0].y + (3 * points[1].y) - 3*points[2].y + points[3].y);
-
-  var bx = (2*points[0].x + (-5 * points[1].x) + (4 * points[2].x) + (-1 * points[3].x));
-  var by = (2*points[0].y + (-5 * points[1].y) + (4 * points[2].y) + (-1 *  points[3].y));
-
-  var cx = (-points[0].x + points[2].x );
-  var cy = (-points[0].y + points[2].y );
-
-  var dx = (2*points[1].x);
-  var dy = (2*points[1].y);
 
   for (var t = -1; t < 2.0; t += interval) {
     context.moveTo(
