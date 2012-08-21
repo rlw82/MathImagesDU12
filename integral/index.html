@@ -3,10 +3,10 @@
   </head>
   <body>
    <div id="parabola" class="jxgbox" style="width:600px; height:400px;"></div>
-    <link rel="stylesheet" type="text/css" href="http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css"></link>
+    <link rel="stylesheet" type="text/css" href="./css/jsxgraph.css"></link>
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.93/jsxgraphcore.js"></script>
+    <script type="text/javascript" src="../lib/jsxgraphcore.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 
 	<form name="radioForm" method="get" action="" onSubmit="return false;">
@@ -18,7 +18,7 @@
     <p>
     <input type="range" value="10" id="numRecs" min="3" max="150"> Number of Rectangles: <span id="numberRecs">0</span>
     <button type="button" onClick="create()">Update Rectangles</button>
-    <script src="slider.js"></script>
+    <script src="../lib/slider.js"></script>
     <script type="text/javascript">
 		var board = JXG.JSXGraph.initBoard('parabola', {boundingbox: [-8, 100, 8, -100], axis:true, showCopyright:false,
 				showNavigation:false,pan:false,zoom:false});;

@@ -3,7 +3,11 @@
   </head>
   <body>
     <div id="hull" style="width:600px; height:600px;"></div>
-    <input type="button" id="randPts">Create Random Points</input>
+    <button type="button" id="randPts">Create Random Points</button>
+    <button type="button" id="clearPts">Delete Points</button>
+    <p>
+      Click on the screen to add new points and recompute the convex hull. The QuickHull algorithm is used. The intermidate baselines used to compute the hull can be seen in black.
+    </p>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
     <script type="text/javascript" src="../lib/kinetic-v3.10.0.js"></script>
     <script type="text/javascript" src="hull_example.js"></script>
