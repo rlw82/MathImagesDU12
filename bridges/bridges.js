@@ -158,7 +158,7 @@ $(document).ready(function() {
   }
   
   function start_game() {
-    text.setText("Drag the moues to start playing");
+    text.setText("Drag the mouse to start playing");
     text_layer.show();
   }
 
