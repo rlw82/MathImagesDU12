@@ -24,6 +24,7 @@ $(document).ready(function() {
   text = null;
 
   init();
+  start_game();
 
   function init(){
     stage = new Kinetic.Stage({
@@ -156,6 +157,11 @@ $(document).ready(function() {
 
   }
   
+  function start_game() {
+    text.setText("Drag the moues to start playing");
+    text_layer.show();
+  }
+
   function end_game(message){
     text.setText(message);
     text_layer.show();
