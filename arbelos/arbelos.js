@@ -16,15 +16,6 @@ var left_int_angle = 0;
 var slope;
 var intercept;
 
-function writeMessage(messageLayer, message, message2, xpos, ypos) {
-				var context = messageLayer.getContext();
-				messageLayer.clear();
-				context.font = "18pt Calibri";
-				context.fillStyle = "black";
-				context.fillText(message, xpos, ypos);
-				context.fillText(message2, xpos, ypos + 20);
-}
-
 function calculate() { 
 
   D = left_x - right_x;
@@ -43,13 +34,20 @@ function calculate() {
 
   intercept = right_tangent_y - (slope * right_tangent_x);
   
+  if(slope === 0) {
+    tangent_line_x1 = 0;
+    tangent_line_x2 = 5000;
+
+    tangent_line_y1 = y - left_r;
+    tangent_line_y2 = y - right_r;
+  }
+  else {
   tangent_line_y2 = intercept;
   tangent_line_x2 = (tangent_line_y2 - intercept) / slope;
 
   tangent_line_y1 = (slope * 600) + intercept;
   tangent_line_x1 = (tangent_line_y1 - intercept) / slope;
-
-
+  }
 }
 
 function drawArbelos(leftArc, rightArc, xpos, arcLayer) {
@@ -74,7 +72,6 @@ y = 300;
 rightPadding = (stage.getWidth() - padding);
 
 var backLayer = new Kinetic.Layer();
-var messageLayer = new Kinetic.Layer();
 var arcLayer = new Kinetic.Layer();
 var dragLayer = new Kinetic.Layer();
 
@@ -199,7 +196,6 @@ arcLayer.draw();
 
 dragCircle.on("dragmove", function() {
 	drawArbelos(leftArc, rightArc, dragCircle.attrs.x, arcLayer);
-	writeMessage(messageLayer, "left radius:" +  (Math.round(left_r)), "right radius:" + (Math.round(right_r)), 10, 25);
   calculate();
 });
 
@@ -214,6 +210,5 @@ arcLayer.add(tangentLine);
 stage.add(backLayer);
 stage.add(arcLayer);
 stage.add(dragLayer);
-stage.add(messageLayer);
 };
 
