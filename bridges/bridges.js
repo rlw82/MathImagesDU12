@@ -50,7 +50,8 @@ $(document).ready(function() {
       text: 'Game Over',
       align: 'center',
       textFill: 'white',
-//      fontSize: 24
+      fontSize: 16,
+      fontFamily: "arial"
     });
     text_layer.add(text);
 
