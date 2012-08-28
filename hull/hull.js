@@ -114,9 +114,16 @@ $(document).ready(function() {
     stage.draw();
   }
   
+  function plotHull(){
+    running = true;
+//    unbindEvents();
+    PlotConvexHull();
+//    bindEvents();
+    running = false;
+  }
   
-  
-  function qhPlotConvexHull() {
+  function PlotConvexHull() {
+    background.off('mousedown');
     var ch = getConvexHull(pts);
     var eBL = allBaseLines[0];
     function plotIntermediateBL() {
@@ -134,6 +141,7 @@ $(document).ready(function() {
     }
     plotIntermediateBL();
   }
+
   function init(){ 
     stage = new Kinetic.Stage({
       container: 'hull',
@@ -147,7 +155,7 @@ $(document).ready(function() {
     stage.add(pointsLayer);
     stage.add(lineLayer);
     
-    var background = new Kinetic.Rect({
+    background = new Kinetic.Rect({
       x: 0,
       y: 0,
       height: stage.attrs.height,
@@ -161,32 +169,7 @@ $(document).ready(function() {
     stage.add(bg);
     bg.moveToTop(); 
     
-    background.on('mousedown', function(e){
-        console.log("MOUSEDOWN");
-        var position = stage.getMousePosition();
-        x = position.x
-        y = position.y
-        pointsLayer.add( new Kinetic.Circle({
-          radius: 3,
-          x: x,
-          y: y,
-          fill: 'black',
-        }));
-        pts.push([x, y]);
-        lineLayer.removeChildren();
-        lineLayer.draw();
-        qhPlotConvexHull();
-    });
-  
-    $('#randPts').click(function(){
-      clearBoard();
-      drawNewPoints();
-    }); 
-  
-    $('#clearPts').click(function(){
-      clearBoard();
-    });
-  
+    bindEvents();  
     drawNewPoints();
   
   }
@@ -199,9 +182,50 @@ $(document).ready(function() {
   }
   function drawNewPoints(){
     qhPlotPoints();
-    qhPlotConvexHull();
+    plotHull();
+    //qhPlotConvexHull();
   }
-  //  canvas = document.getElementById('hull');
-  //  ctx = canvas.getContext('2d');
+
+
+
+  function bindEvents(){
+
+    background.on('mousedown', function(e) {
+      if(running == true){
+        return;
+      }
+      console.log("MOUSEDOWN");
+      var position = stage.getMousePosition();
+      x = position.x
+      y = position.y
+      pointsLayer.add( new Kinetic.Circle({
+        radius: 3,
+        x: x,
+        y: y,
+        fill: 'black',
+      }));
+      pts.push([x, y]);
+      lineLayer.removeChildren();
+      lineLayer.draw();
+      //qhPlotConvexHull();
+      plotHull();
+    });
+
+
+    $('#randPts').click(function(){
+      if(running == true){
+        return;
+      }
+      clearBoard();
+      drawNewPoints();
+    }); 
+  
+    $('#clearPts').click(function(){
+      if(running == true){
+        return;
+      }
+      clearBoard();
+    });
+  }
   init();
 });
