@@ -2,7 +2,8 @@ $(document).ready(function() {
 
   var size = Math.PI*100
 
-  var board = JXG.JSXGraph.initBoard('parabola', {boundingbox: [-size, size, size, -size], axis:true, showCopyright:false});
+  var board = JXG.JSXGraph.initBoard('parabola', {boundingbox: [-size, size, size, -size], axis:true, showCopyright:false, showNavigation:false});
+
 
   //create the parabola
   var focus = board.create('point', [0, size/2], {name:'focus'});
